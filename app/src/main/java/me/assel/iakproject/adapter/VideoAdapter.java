@@ -1,4 +1,4 @@
-package me.assel.iakproject.tools;
+package me.assel.iakproject.adapter;
 
 import android.content.Context;
 import android.content.Intent;

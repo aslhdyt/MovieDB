@@ -1,4 +1,4 @@
-package me.assel.iakproject.tools;
+package me.assel.iakproject.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -69,6 +69,7 @@ public class MoviePresenter {
 
         };
         mRecyclerView.addOnScrollListener(scrollListener);
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(MoviePresenter.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())

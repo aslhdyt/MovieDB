@@ -20,7 +20,6 @@ import me.assel.iakproject.adapter.MoviePresenter;
 import me.assel.iakproject.adapter.ReviewAdapter;
 import me.assel.iakproject.adapter.VideoAdapter;
 import me.assel.iakproject.api.request.RequestInterface;
-import me.assel.iakproject.api.response.Movies;
 import me.assel.iakproject.api.response.Reviews;
 import me.assel.iakproject.api.response.Videos;
 import me.assel.iakproject.db.DbObject;
@@ -33,13 +32,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static me.assel.iakproject.adapter.MoviePresenter.API_KEY;
 import static me.assel.iakproject.adapter.MoviePresenter.IMG_BASE_URL;
 
-public class DetailsActivity extends AppCompatActivity {
+public class DbDetailActivity extends AppCompatActivity {
     ImageView poster, like;
     TextView title, release, overView, star;
 
     TabHost host;
 
-    Movies.Result movie;
+    DbObject movie;
     List<Videos.Result> videos;
     List<Reviews.Result> reviews;
 
@@ -60,27 +59,19 @@ public class DetailsActivity extends AppCompatActivity {
         like = (ImageView) findViewById(R.id.imageView_like);
 
 
-        movie = getIntent().getExtras().getParcelable("result");
-        if(movie == null) return;
-
-        Picasso.with(this).load(IMG_BASE_URL+ movie.getPoster_path()).placeholder(R.drawable.video).into(poster);
-        title.setText(movie.getTitle());
-        release.setText(movie.getRelease_date());
-        overView.setText(movie.getOverview());
-        star.setText(String.valueOf(movie.getVote_average()));
-
+        long id = getIntent().getLongExtra("id", 0);
         realm = Realm.getDefaultInstance();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                DbObject result =  realm.where(DbObject.class)
-                        .equalTo("id", movie.getId())
-                        .findFirst();
-                if (result != null) {
-                    setLike(true);
-                }
-            }
-        });
+
+        movie =  realm.where(DbObject.class)
+                .equalTo("id", id)
+                .findFirst();
+        if(movie == null) return;
+        setLike(true);
+        title.setText(movie.getTitle());
+        release.setText(movie.getRelease());
+        overView.setText(movie.getOverview());
+        star.setText(String.valueOf(movie.getRating()));
+        Picasso.with(this).load(IMG_BASE_URL+ movie.getImgUrl()).placeholder(R.drawable.video).into(poster);
 
 
 
@@ -177,10 +168,10 @@ public class DetailsActivity extends AppCompatActivity {
         if (!isLike) {
             DbObject db = realm.createObject(DbObject.class, movie.getId());
             db.setTitle(movie.getTitle());
-            db.setRelease(movie.getRelease_date());
+            db.setRelease(movie.getRelease());
             db.setOverview(movie.getOverview());
-            db.setRating(movie.getVote_average());
-            db.setImgUrl(movie.getPoster_path());
+            db.setRating(movie.getRating());
+            db.setImgUrl(movie.getImgUrl());
             setLike(true);
         } else {
             RealmResults<DbObject> result = realm

@@ -1,4 +1,4 @@
-package me.assel.iakproject.tools;
+package me.assel.iakproject.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

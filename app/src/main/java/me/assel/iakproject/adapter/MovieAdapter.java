@@ -1,4 +1,4 @@
-package me.assel.iakproject.tools;
+package me.assel.iakproject.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -39,11 +39,11 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        Log.d("RecyclerView", "item show= "+position);
+//        Log.d("RecyclerView", "item show= "+position);
         final Movies.Result result = moviesList.get(position);
 
         // loading album cover using Glide library
-        Picasso.with(mContext).load(MoviePresenter.IMG_BASE_URL+ result.getPoster_path()).into(holder.poster);
+        Picasso.with(mContext).load(MoviePresenter.IMG_BASE_URL+ result.getPoster_path()).placeholder(R.drawable.movie).into(holder.poster);
 
 
         holder.poster.setOnClickListener(new View.OnClickListener() {
