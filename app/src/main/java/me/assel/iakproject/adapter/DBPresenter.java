@@ -23,13 +23,19 @@ public class DBPresenter {
 
     private DbAdapter adapter;
 
+
+    private static final String STATE_MOVIE = "movies_state";
+    private int PAGE_SIZE = 0;
+    private int CUR_PAGE = 0;
+
     public DBPresenter(MainActivity ctx, RecyclerView mRecyclerView, Bundle savedInstanceState) {
         context = ctx;
         recyclerView = mRecyclerView;
         mLayoutManager = new GridLayoutManager(context, 2);
 
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+
 
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
@@ -38,9 +44,10 @@ public class DBPresenter {
         realm.commitTransaction();
 
         adapter = new DbAdapter((Activity) context, list);
-        mRecyclerView.setAdapter(adapter);
-
+        recyclerView.setAdapter(adapter);
     }
+
+
     public void setColumn(int column) {
         mLayoutManager.setSpanCount(column);
     }

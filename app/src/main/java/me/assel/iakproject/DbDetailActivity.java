@@ -107,16 +107,6 @@ public class DbDetailActivity extends AppCompatActivity {
                 List<Videos.Result> result = response.body().getResults();
                 videos = result;
 
-//                int i = 0;
-//                for (Videos.Result video : result) {
-//                    Log.d("Videos", "index = "+i
-//                        +"\nName = "+video.getName()
-//                        +"\nid = "+video.getId()
-//                        +"\nsite = "+video.getSite()
-//                        +"\ntype = "+video.getType()
-//                        +"\nsize = "+video.getSize());
-//                    i++;
-//                }
                 VideoAdapter adapter = new VideoAdapter(getBaseContext(), result);
 
                 RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerView_trailer);
@@ -189,13 +179,13 @@ public class DbDetailActivity extends AppCompatActivity {
             like.setImageDrawable(getResources().getDrawable(R.drawable.liked));
             like.setTag(R.drawable.liked);
             isLike = true;
-            ((TextView)findViewById(R.id.textView_like)).setText("You liked this");
+            ((TextView)findViewById(R.id.textView_like)).setText(me.assel.iakproject.R.string.like_true);
 
         } else {
             like.setImageDrawable(getResources().getDrawable(R.drawable.unlike));
             like.setTag(R.drawable.unlike);
             isLike = false;
-            ((TextView)findViewById(R.id.textView_like)).setText("Like this?");
+            ((TextView)findViewById(R.id.textView_like)).setText(me.assel.iakproject.R.string.like_false);
         }
     }
 

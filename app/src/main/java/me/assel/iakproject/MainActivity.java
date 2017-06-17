@@ -9,13 +9,10 @@ import android.util.Log;
 import android.widget.TabHost;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 import me.assel.iakproject.adapter.DBPresenter;
 import me.assel.iakproject.adapter.MoviePresenter;
-import me.assel.iakproject.db.DbObject;
 
 public class MainActivity extends Activity {
-    String TAG = "MainActivity";
     private MoviePresenter moviePresenter1, moviePresenter2;
     private DBPresenter moviePresenter3;
     TabHost host;
@@ -53,9 +50,6 @@ public class MainActivity extends Activity {
             @Override
             public void onTabChanged(String tabId) {
                     Log.d("tab num", String.valueOf(host.getCurrentTab()));
-                if (tabId.equals("Favourite")) {
-                    refreshRealm();
-                }
             }
         });
 
@@ -73,11 +67,10 @@ public class MainActivity extends Activity {
         RecyclerView mRecycler3 = (RecyclerView) findViewById(R.id.recycler_view3);
         moviePresenter3 = new DBPresenter(this, mRecycler3, savedInstanceState);
 
-
         if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
             moviePresenter1.setColumn(2);
             moviePresenter2.setColumn(2);
-            moviePresenter3.setColumn(4);
+            moviePresenter3.setColumn(2);
         }
         else{
             moviePresenter1.setColumn(4);
@@ -87,14 +80,6 @@ public class MainActivity extends Activity {
     }
 
     private void refreshRealm() {
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        RealmResults<DbObject> result = realm.where(DbObject.class).findAll();
-        Log.d("DB", String.valueOf(result.size()));
-        for(DbObject obj : result) {
-            Log.d("DB", obj.toString());
-        }
-        realm.commitTransaction();
         moviePresenter3.refresh();
     }
 
@@ -109,6 +94,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d("Activity", "return from requestCode = "+requestCode
+            +"\nresultCode = "+resultCode);
         if(requestCode == 1) {
             refreshRealm();
         }

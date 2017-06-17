@@ -1,6 +1,8 @@
 <resources>
-    <string name="app_name">IAKProject</string>
+    <string name="app_name">Movie Browse</string>
 
     <string name="action_add_favourite">Add to Favourites</string>
+    <string name="like_true">You liked this</string>
+    <string name="like_false">Like this?</string>
 
 </resources>

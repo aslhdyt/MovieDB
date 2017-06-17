@@ -36,7 +36,7 @@ public class DbAdapter extends RecyclerView.Adapter<DbAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(DbAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(DbAdapter.ViewHolder holder, int position) {
         final DbObject result = moviesList.get(position);
 
         Picasso.with(mContext).load(MoviePresenter.IMG_BASE_URL+ result.getImgUrl()).placeholder(R.drawable.video).into(holder.poster);
@@ -46,7 +46,7 @@ public class DbAdapter extends RecyclerView.Adapter<DbAdapter.ViewHolder> {
             public void onClick(View v) {
                 Log.d("click", "Result title = "+ result.getTitle());
                 Intent i = new Intent(mContext, DbDetailActivity.class);
-                i.putExtra("id", moviesList.get(position).getId());
+                i.putExtra("id", result.getId());
                 mContext.startActivityForResult(i, 1);
             }
         });
