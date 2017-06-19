@@ -116,16 +116,6 @@ public class DetailsActivity extends AppCompatActivity {
                 List<Videos.Result> result = response.body().getResults();
                 videos = result;
 
-//                int i = 0;
-//                for (Videos.Result video : result) {
-//                    Log.d("Videos", "index = "+i
-//                        +"\nName = "+video.getName()
-//                        +"\nid = "+video.getId()
-//                        +"\nsite = "+video.getSite()
-//                        +"\ntype = "+video.getType()
-//                        +"\nsize = "+video.getSize());
-//                    i++;
-//                }
                 VideoAdapter adapter = new VideoAdapter(getBaseContext(), result);
 
                 RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerView_trailer);
@@ -170,7 +160,6 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     public void like (View view) {
-        //TODO: 5/26/17 SAVE TO SQLITE
         realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         ImageView v = (ImageView) view;

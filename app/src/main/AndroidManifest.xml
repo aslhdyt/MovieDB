@@ -20,7 +20,10 @@
         </activity>
         <activity android:name=".DetailsActivity"/>
         <activity android:name=".DbDetailActivity"/>
-
+        <provider
+            android:authorities="me.assel.iakproject.db"
+            android:name="me.assel.iakproject.db.FavContentProvider"
+            android:exported="true"/>
 
 
     </application>

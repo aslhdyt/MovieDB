@@ -39,10 +39,9 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-//        Log.d("RecyclerView", "item show= "+position);
         final Movies.Result result = moviesList.get(position);
 
-        // loading album cover using Glide library
+        // loading album cover using Retrofit library
         Picasso.with(mContext).load(MoviePresenter.IMG_BASE_URL+ result.getPoster_path()).placeholder(R.drawable.movie).into(holder.poster);
 
 
@@ -58,12 +57,10 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
     }
 
-
     @Override
     public int getItemCount() {
         return moviesList.size();
     }
-
 
     class ViewHolder extends RecyclerView.ViewHolder{
         ImageView poster;
@@ -72,9 +69,5 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
             super(view);
             poster = (ImageView) view.findViewById(R.id.poster);
         }
-
-
     }
-
-
 }
