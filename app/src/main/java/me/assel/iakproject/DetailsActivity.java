@@ -32,6 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static me.assel.iakproject.AppConfig.API_KEY;
 import static me.assel.iakproject.AppConfig.BASE_URL;
 import static me.assel.iakproject.AppConfig.IMG_BASE_URL;
+import static me.assel.iakproject.AppConfig.realmConfig;
 
 public class DetailsActivity extends AppCompatActivity {
     ImageView poster, like;
@@ -69,7 +70,7 @@ public class DetailsActivity extends AppCompatActivity {
         overView.setText(movie.getOverview());
         star.setText(String.valueOf(movie.getVoteAverage()));
 
-        realm = Realm.getDefaultInstance();
+        realm = Realm.getInstance(realmConfig());
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -160,7 +161,7 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     public void like (View view) {
-        realm = Realm.getDefaultInstance();
+        realm = Realm.getInstance(realmConfig());
         realm.beginTransaction();
         ImageView v = (ImageView) view;
         if (!isLike) {

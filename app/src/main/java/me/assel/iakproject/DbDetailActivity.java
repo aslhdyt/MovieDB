@@ -31,6 +31,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static me.assel.iakproject.AppConfig.API_KEY;
 import static me.assel.iakproject.AppConfig.BASE_URL;
 import static me.assel.iakproject.AppConfig.IMG_BASE_URL;
+import static me.assel.iakproject.AppConfig.realmConfig;
 
 public class DbDetailActivity extends AppCompatActivity {
     ImageView poster, like;
@@ -60,7 +61,7 @@ public class DbDetailActivity extends AppCompatActivity {
 
 
         long id = getIntent().getLongExtra("id", 0);
-        realm = Realm.getDefaultInstance();
+        realm = Realm.getInstance(realmConfig());
 
         movie =  realm.where(DbObject.class)
                 .equalTo("id", id)
@@ -152,7 +153,7 @@ public class DbDetailActivity extends AppCompatActivity {
 
     public void like (View view) {
         //TODO: 5/26/17 SAVE TO SQLITE
-        realm = Realm.getDefaultInstance();
+        realm = Realm.getInstance(realmConfig());
         realm.beginTransaction();
         ImageView v = (ImageView) view;
         if (!isLike) {
