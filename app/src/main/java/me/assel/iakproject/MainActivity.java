@@ -9,8 +9,8 @@ import android.util.Log;
 import android.widget.TabHost;
 
 import io.realm.Realm;
-import me.assel.iakproject.adapter.DBPresenter;
-import me.assel.iakproject.adapter.MoviePresenter;
+import me.assel.iakproject.presenter.DBPresenter;
+import me.assel.iakproject.presenter.MoviePresenter;
 
 public class MainActivity extends Activity {
     private MoviePresenter moviePresenter1, moviePresenter2;

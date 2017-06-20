@@ -1,4 +1,4 @@
-package me.assel.iakproject.adapter;
+package me.assel.iakproject.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.assel.iakproject.R;
+import me.assel.iakproject.adapter.MovieAdapter;
 import me.assel.iakproject.api.request.RequestInterface;
 import me.assel.iakproject.api.response.Movies;
 import me.assel.iakproject.api.utils.EndlessRecyclerViewScrollListener;
@@ -21,6 +22,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static me.assel.iakproject.api.ConnectionData.API_KEY;
+import static me.assel.iakproject.api.ConnectionData.BASE_URL;
+
 /**
  * Created by assel on 5/23/17.
  */
@@ -29,9 +33,6 @@ public class MoviePresenter {
     private static final String STATE_MOVIE = "movies_state";
     private String TAG = "presenter";
 
-    public static final String API_KEY = "0435f42cef8dc5bf18741d2c0df0034a";
-    public static final String BASE_URL = "http://api.themoviedb.org/3/";
-    public static final String IMG_BASE_URL = "https://image.tmdb.org/t/p/w780";
 
     private Context context;
     private RecyclerView recyclerView;
@@ -71,7 +72,7 @@ public class MoviePresenter {
         mRecyclerView.addOnScrollListener(scrollListener);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(MoviePresenter.BASE_URL)
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         request = retrofit.create(RequestInterface.class);

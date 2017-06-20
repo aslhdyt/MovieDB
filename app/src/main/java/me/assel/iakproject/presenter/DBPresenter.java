@@ -1,4 +1,4 @@
-package me.assel.iakproject.adapter;
+package me.assel.iakproject.presenter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import me.assel.iakproject.MainActivity;
+import me.assel.iakproject.adapter.DbAdapter;
 import me.assel.iakproject.db.DbObject;
 
 /**

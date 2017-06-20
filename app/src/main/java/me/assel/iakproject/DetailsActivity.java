@@ -16,7 +16,6 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import me.assel.iakproject.adapter.MoviePresenter;
 import me.assel.iakproject.adapter.ReviewAdapter;
 import me.assel.iakproject.adapter.VideoAdapter;
 import me.assel.iakproject.api.request.RequestInterface;
@@ -30,8 +29,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static me.assel.iakproject.adapter.MoviePresenter.API_KEY;
-import static me.assel.iakproject.adapter.MoviePresenter.IMG_BASE_URL;
+import static me.assel.iakproject.api.ConnectionData.API_KEY;
+import static me.assel.iakproject.api.ConnectionData.BASE_URL;
+import static me.assel.iakproject.api.ConnectionData.IMG_BASE_URL;
 
 public class DetailsActivity extends AppCompatActivity {
     ImageView poster, like;
@@ -104,7 +104,7 @@ public class DetailsActivity extends AppCompatActivity {
 
         //getTrailerVideos
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(MoviePresenter.BASE_URL)
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         RequestInterface request = retrofit.create(RequestInterface.class);

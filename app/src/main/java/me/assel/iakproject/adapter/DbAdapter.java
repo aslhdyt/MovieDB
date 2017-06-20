@@ -16,6 +16,8 @@ import me.assel.iakproject.DbDetailActivity;
 import me.assel.iakproject.R;
 import me.assel.iakproject.db.DbObject;
 
+import static me.assel.iakproject.api.ConnectionData.IMG_BASE_URL;
+
 /**
  * Created by assel on 5/28/17.
  */
@@ -23,7 +25,7 @@ import me.assel.iakproject.db.DbObject;
 public class DbAdapter extends RecyclerView.Adapter<DbAdapter.ViewHolder> {
     private Activity mContext;
     private RealmResults<DbObject> moviesList;
-    DbAdapter(Activity mContext, RealmResults<DbObject> list) {
+    public DbAdapter(Activity mContext, RealmResults<DbObject> list) {
         this.mContext = mContext;
         this.moviesList = list;
     }
@@ -39,7 +41,7 @@ public class DbAdapter extends RecyclerView.Adapter<DbAdapter.ViewHolder> {
     public void onBindViewHolder(DbAdapter.ViewHolder holder, int position) {
         final DbObject result = moviesList.get(position);
 
-        Picasso.with(mContext).load(MoviePresenter.IMG_BASE_URL+ result.getImgUrl()).placeholder(R.drawable.video).into(holder.poster);
+        Picasso.with(mContext).load(IMG_BASE_URL+ result.getImgUrl()).placeholder(R.drawable.video).into(holder.poster);
 
         holder.poster.setOnClickListener(new View.OnClickListener() {
             @Override

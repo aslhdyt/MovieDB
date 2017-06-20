@@ -17,15 +17,17 @@ import me.assel.iakproject.DetailsActivity;
 import me.assel.iakproject.R;
 import me.assel.iakproject.api.response.Movies;
 
+import static me.assel.iakproject.api.ConnectionData.IMG_BASE_URL;
+
 /**
  * Created by assel on 5/23/17.
  */
 
-class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
+public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
     private Context mContext;
     private List<Movies.Result> moviesList;
 
-    MovieAdapter(Context mContext, List<Movies.Result> moviesList) {
+    public MovieAdapter(Context mContext, List<Movies.Result> moviesList) {
         this.mContext = mContext;
         this.moviesList = moviesList;
     }
@@ -42,7 +44,7 @@ class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
         final Movies.Result result = moviesList.get(position);
 
         // loading album cover using Retrofit library
-        Picasso.with(mContext).load(MoviePresenter.IMG_BASE_URL+ result.getPoster_path()).placeholder(R.drawable.movie).into(holder.poster);
+        Picasso.with(mContext).load(IMG_BASE_URL+ result.getPoster_path()).placeholder(R.drawable.movie).into(holder.poster);
 
 
         holder.poster.setOnClickListener(new View.OnClickListener() {
