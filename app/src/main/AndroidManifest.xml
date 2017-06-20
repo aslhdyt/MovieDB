@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="me.assel.iakproject">
+    package="me.assel.moviedb">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -11,18 +11,18 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="me.assel.moviedb.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailsActivity"/>
-        <activity android:name=".DbDetailActivity"/>
+        <activity android:name="me.assel.moviedb.DetailsActivity"/>
+        <activity android:name="me.assel.moviedb.DbDetailActivity"/>
         <provider
-            android:authorities="me.assel.iakproject.db"
-            android:name="me.assel.iakproject.db.FavContentProvider"
+            android:authorities="me.assel.moviedb.contentProvider"
+            android:name="me.assel.moviedb.contentProvider.FavContentProvider"
             android:exported="true"/>
 
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Movie Browse</string>
+    <string name="app_name">Movie Browser</string>
 
     <string name="action_add_favourite">Add to Favourites</string>
     <string name="like_true">You liked this</string>
