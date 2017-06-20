@@ -17,7 +17,7 @@ import me.assel.iakproject.DetailsActivity;
 import me.assel.iakproject.R;
 import me.assel.iakproject.api.response.Movies;
 
-import static me.assel.iakproject.api.ConnectionData.IMG_BASE_URL;
+import static me.assel.iakproject.AppConfig.IMG_BASE_URL;
 
 /**
  * Created by assel on 5/23/17.
@@ -25,9 +25,9 @@ import static me.assel.iakproject.api.ConnectionData.IMG_BASE_URL;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
     private Context mContext;
-    private List<Movies.Result> moviesList;
+    private List<Movies> moviesList;
 
-    public MovieAdapter(Context mContext, List<Movies.Result> moviesList) {
+    public MovieAdapter(Context mContext, List<Movies> moviesList) {
         this.mContext = mContext;
         this.moviesList = moviesList;
     }
@@ -41,10 +41,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final Movies.Result result = moviesList.get(position);
+        final Movies result = moviesList.get(position);
 
         // loading album cover using Retrofit library
-        Picasso.with(mContext).load(IMG_BASE_URL+ result.getPoster_path()).placeholder(R.drawable.movie).into(holder.poster);
+        Picasso.with(mContext).load(IMG_BASE_URL+ result.getPosterPath()).placeholder(R.drawable.movie).into(holder.poster);
 
 
         holder.poster.setOnClickListener(new View.OnClickListener() {

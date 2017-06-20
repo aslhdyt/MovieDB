@@ -13,6 +13,8 @@ import me.assel.iakproject.MainActivity;
 import me.assel.iakproject.adapter.DbAdapter;
 import me.assel.iakproject.db.DbObject;
 
+import static me.assel.iakproject.AppConfig.realmConfig;
+
 /**
  * Created by assel on 5/28/17.
  */
@@ -38,7 +40,7 @@ public class DBPresenter {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
 
-        Realm realm = Realm.getDefaultInstance();
+        Realm realm = Realm.getInstance(realmConfig());
         realm.beginTransaction();
         RealmResults<DbObject> list = realm.where(DbObject.class)
                 .findAll();

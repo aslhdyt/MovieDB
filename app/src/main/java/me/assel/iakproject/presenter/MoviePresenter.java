@@ -15,6 +15,7 @@ import me.assel.iakproject.R;
 import me.assel.iakproject.adapter.MovieAdapter;
 import me.assel.iakproject.api.request.RequestInterface;
 import me.assel.iakproject.api.response.Movies;
+import me.assel.iakproject.api.response.Page;
 import me.assel.iakproject.api.utils.EndlessRecyclerViewScrollListener;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,8 +23,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static me.assel.iakproject.api.ConnectionData.API_KEY;
-import static me.assel.iakproject.api.ConnectionData.BASE_URL;
+import static me.assel.iakproject.AppConfig.API_KEY;
+import static me.assel.iakproject.AppConfig.BASE_URL;
+import static me.assel.iakproject.AppConfig.retrofitBuilder;
 
 /**
  * Created by assel on 5/23/17.
@@ -40,7 +42,7 @@ public class MoviePresenter {
 
     private final RequestInterface request;
 
-    private List<Movies.Result> allResult = new ArrayList<>();
+    private List<Movies> allResult = new ArrayList<>();
     private MovieAdapter adapter;
     private int PAGE_SIZE = 0;
     private int CUR_PAGE = 0;
@@ -71,31 +73,28 @@ public class MoviePresenter {
         };
         mRecyclerView.addOnScrollListener(scrollListener);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = retrofitBuilder();
         request = retrofit.create(RequestInterface.class);
 
         if(savedInstanceState == null) {
-            Call<Movies> item;
+            Call<Page> item;
             if(mRecyclerView.getId() == R.id.recycler_view1) {
                 item = request.getPopular(API_KEY, 1);
             } else {
                 item = request.getTopRated(API_KEY, 1);
             }
-            item.enqueue(new Callback<Movies>() {
+            item.enqueue(new Callback<Page>() {
                 @Override
-                public void onResponse(Call<Movies> call, Response<Movies> response) {
+                public void onResponse(Call<Page> call, Response<Page> response) {
                     allResult = response.body().getResults();
-                    PAGE_SIZE = response.body().getTotal_pages();
+                    PAGE_SIZE = response.body().getTotalPages();
                     CUR_PAGE = response.body().getPage();
                     adapter = new MovieAdapter(context, allResult);
                     mRecyclerView.setAdapter(adapter);
                 }
 
                 @Override
-                public void onFailure(Call<Movies> call, Throwable t) {
+                public void onFailure(Call<Page> call, Throwable t) {
                     t.printStackTrace();
                 }
             });
@@ -116,11 +115,11 @@ public class MoviePresenter {
 
 
     private void loadNextDataFromApi(int page) {
-        Call<Movies> item = request.getPopular(API_KEY, page);
-        item.enqueue(new Callback<Movies>() {
+        Call<Page> item = request.getPopular(API_KEY, page);
+        item.enqueue(new Callback<Page>() {
             @Override
-            public void onResponse(Call<Movies> call, Response<Movies> response) {
-                List<Movies.Result> movies = response.body().getResults();
+            public void onResponse(Call<Page> call, Response<Page> response) {
+                List<Movies> movies = response.body().getResults();
                 final int curSize = adapter.getItemCount();
                 allResult.addAll(movies);
 
@@ -134,7 +133,7 @@ public class MoviePresenter {
             }
 
             @Override
-            public void onFailure(Call<Movies> call, Throwable t) {
+            public void onFailure(Call<Page> call, Throwable t) {
                 t.printStackTrace();
             }
         });

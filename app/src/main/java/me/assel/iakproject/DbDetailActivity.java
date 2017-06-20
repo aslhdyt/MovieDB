@@ -28,9 +28,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static me.assel.iakproject.api.ConnectionData.API_KEY;
-import static me.assel.iakproject.api.ConnectionData.BASE_URL;
-import static me.assel.iakproject.api.ConnectionData.IMG_BASE_URL;
+import static me.assel.iakproject.AppConfig.API_KEY;
+import static me.assel.iakproject.AppConfig.BASE_URL;
+import static me.assel.iakproject.AppConfig.IMG_BASE_URL;
 
 public class DbDetailActivity extends AppCompatActivity {
     ImageView poster, like;

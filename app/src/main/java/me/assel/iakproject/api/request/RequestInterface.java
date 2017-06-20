@@ -1,6 +1,6 @@
 package me.assel.iakproject.api.request;
 
-import me.assel.iakproject.api.response.Movies;
+import me.assel.iakproject.api.response.Page;
 import me.assel.iakproject.api.response.Reviews;
 import me.assel.iakproject.api.response.Videos;
 import retrofit2.Call;
@@ -15,13 +15,13 @@ import retrofit2.http.Query;
 public interface RequestInterface {
 
     @GET("movie/popular")
-    Call<Movies> getPopular(
+    Call<Page> getPopular(
             @Query("api_key")String apiKey,
             @Query("page") int page
     );
 
     @GET("movie/top_rated")
-    Call<Movies> getTopRated(
+    Call<Page> getTopRated(
             @Query("api_key")String apiKey,
             @Query("page")int page
     );

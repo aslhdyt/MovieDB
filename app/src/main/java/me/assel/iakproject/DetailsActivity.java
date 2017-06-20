@@ -29,9 +29,9 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static me.assel.iakproject.api.ConnectionData.API_KEY;
-import static me.assel.iakproject.api.ConnectionData.BASE_URL;
-import static me.assel.iakproject.api.ConnectionData.IMG_BASE_URL;
+import static me.assel.iakproject.AppConfig.API_KEY;
+import static me.assel.iakproject.AppConfig.BASE_URL;
+import static me.assel.iakproject.AppConfig.IMG_BASE_URL;
 
 public class DetailsActivity extends AppCompatActivity {
     ImageView poster, like;
@@ -39,7 +39,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     TabHost host;
 
-    Movies.Result movie;
+    Movies movie;
     List<Videos.Result> videos;
     List<Reviews.Result> reviews;
 
@@ -63,11 +63,11 @@ public class DetailsActivity extends AppCompatActivity {
         movie = getIntent().getExtras().getParcelable("result");
         if(movie == null) return;
 
-        Picasso.with(this).load(IMG_BASE_URL+ movie.getPoster_path()).placeholder(R.drawable.video).into(poster);
+        Picasso.with(this).load(IMG_BASE_URL+ movie.getPosterPath()).placeholder(R.drawable.video).into(poster);
         title.setText(movie.getTitle());
-        release.setText(movie.getRelease_date());
+        release.setText(movie.getReleaseDate());
         overView.setText(movie.getOverview());
-        star.setText(String.valueOf(movie.getVote_average()));
+        star.setText(String.valueOf(movie.getVoteAverage()));
 
         realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
@@ -166,10 +166,10 @@ public class DetailsActivity extends AppCompatActivity {
         if (!isLike) {
             DbObject db = realm.createObject(DbObject.class, movie.getId());
             db.setTitle(movie.getTitle());
-            db.setRelease(movie.getRelease_date());
+            db.setRelease(movie.getReleaseDate());
             db.setOverview(movie.getOverview());
-            db.setRating(movie.getVote_average());
-            db.setImgUrl(movie.getPoster_path());
+            db.setRating(movie.getVoteAverage());
+            db.setImgUrl(movie.getPosterPath());
             setLike(true);
         } else {
             RealmResults<DbObject> result = realm

@@ -4,9 +4,10 @@ package me.assel.iakproject.api.response;
  * Created by assel on 6/20/17.
  */
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class Page {
 
@@ -21,7 +22,7 @@ public class Page {
     private int totalPages;
     @SerializedName("results")
     @Expose
-    private List<Movie> results = null;
+    private List<Movies> results = null;
 
     public int getPage() {
         return page;
@@ -47,11 +48,11 @@ public class Page {
         this.totalPages = totalPages;
     }
 
-    public List<Result> getResults() {
+    public List<Movies> getResults() {
         return results;
     }
 
-    public void setResults(List<Result> results) {
+    public void setResults(List<Movies> results) {
         this.results = results;
     }
 

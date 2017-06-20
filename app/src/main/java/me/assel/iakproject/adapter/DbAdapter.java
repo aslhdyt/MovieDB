@@ -16,7 +16,7 @@ import me.assel.iakproject.DbDetailActivity;
 import me.assel.iakproject.R;
 import me.assel.iakproject.db.DbObject;
 
-import static me.assel.iakproject.api.ConnectionData.IMG_BASE_URL;
+import static me.assel.iakproject.AppConfig.IMG_BASE_URL;
 
 /**
  * Created by assel on 5/28/17.
