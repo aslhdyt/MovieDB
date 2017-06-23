@@ -1,6 +1,7 @@
 package me.assel.moviedb.contentProvider;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
@@ -8,6 +9,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
+
+import com.google.gson.Gson;
+
+import io.realm.Realm;
+import io.realm.exceptions.RealmException;
+import me.assel.moviedb.AppConfig;
+import me.assel.moviedb.api.response.Movies;
 
 
 /**
@@ -52,7 +61,33 @@ public class FavContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        return null;
+        Realm realm = Realm.getInstance(AppConfig.realmConfig());
+        int match = sUriMatcher.match(uri);
+
+        Gson gson =  new Gson();
+        Movies movies = gson.fromJson(values.getAsString("json"), Movies.class);
+
+        Uri returnUri;
+        switch (match) {
+            case FAV:
+                realm.beginTransaction();
+                Movies realmTransaction= realm.copyToRealm(movies);
+                long id = realmTransaction.getId();
+                realm.commitTransaction();
+                Log.d("Realm", "id = "+id);
+                if(id > 0) {
+                    returnUri = ContentUris.withAppendedId(Contract.Entry.CONTENT_URI, id);
+                    Log.d("Provider", "retrunUri = "+returnUri);
+                } else {
+                    throw new RealmException("Failed to insert row into "+uri);
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknow uri: "+uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return returnUri;
     }
 
     @Override
