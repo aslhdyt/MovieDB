@@ -1,7 +1,6 @@
 package me.assel.moviedb;
 
 import android.os.Bundle;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,8 +16,8 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import me.assel.moviedb.adapter.ReviewAdapter;
-import me.assel.moviedb.adapter.VideoAdapter;
+import me.assel.moviedb.presenter.adapter.ReviewAdapter;
+import me.assel.moviedb.presenter.adapter.VideoAdapter;
 import me.assel.moviedb.api.request.RequestInterface;
 import me.assel.moviedb.api.response.Reviews;
 import me.assel.moviedb.api.response.Videos;

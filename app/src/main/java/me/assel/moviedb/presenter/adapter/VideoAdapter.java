@@ -1,4 +1,4 @@
-package me.assel.moviedb.adapter;
+package me.assel.moviedb.presenter.adapter;
 
 import android.content.Context;
 import android.content.Intent;

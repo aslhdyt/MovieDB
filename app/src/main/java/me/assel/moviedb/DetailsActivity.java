@@ -19,8 +19,8 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import io.realm.Realm;
-import me.assel.moviedb.adapter.ReviewAdapter;
-import me.assel.moviedb.adapter.VideoAdapter;
+import me.assel.moviedb.presenter.adapter.ReviewAdapter;
+import me.assel.moviedb.presenter.adapter.VideoAdapter;
 import me.assel.moviedb.api.request.RequestInterface;
 import me.assel.moviedb.api.response.Movies;
 import me.assel.moviedb.api.response.Reviews;

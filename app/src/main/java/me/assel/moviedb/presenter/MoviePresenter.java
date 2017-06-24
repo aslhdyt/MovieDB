@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.assel.moviedb.R;
-import me.assel.moviedb.adapter.MovieAdapter;
+import me.assel.moviedb.presenter.adapter.MovieAdapter;
 import me.assel.moviedb.api.request.RequestInterface;
 import me.assel.moviedb.api.response.Movies;
 import me.assel.moviedb.api.response.Page;

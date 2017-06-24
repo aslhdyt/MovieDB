@@ -1,7 +1,6 @@
 package me.assel.moviedb;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -79,15 +78,14 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void refreshRealm() {
-        moviePresenter3.refresh();
-    }
+//    private void refreshRealm() {
+//        moviePresenter3.refresh();
+//    }
 
     @Override
     protected void onResume() {
         super.onResume();
         moviePresenter3.onResume(this);
-
     }
 
     @Override
@@ -98,15 +96,15 @@ public class MainActivity extends Activity {
         outState.putInt("Tab",host.getCurrentTab());
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d("Activity", "return from requestCode = "+requestCode
-            +"\nresultCode = "+resultCode);
-        if(requestCode == 1) {
-            refreshRealm();
-        }
-
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        Log.d("Activity", "return from requestCode = "+requestCode
+//            +"\nresultCode = "+resultCode);
+//        if(requestCode == 1) {
+//            refreshRealm();
+//        }
+//
+//    }
 
 }

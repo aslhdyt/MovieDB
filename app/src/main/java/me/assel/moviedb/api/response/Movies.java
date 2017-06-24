@@ -44,7 +44,7 @@ public class Movies implements RealmModel, Parcelable {
     @Expose
     private String originalTitle;
 
-    // TODO: 6/24/17 FIX cant fetch genre_ids
+    // TODO: 6/24/17 FIX cant fetch genre_ids because int Array
     @SerializedName("genre_ids")
     @Expose
     private RealmList<RealmInt> genreIds;

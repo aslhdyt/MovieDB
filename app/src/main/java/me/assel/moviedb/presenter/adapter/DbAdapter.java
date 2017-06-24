@@ -1,4 +1,4 @@
-package me.assel.moviedb.adapter;
+package me.assel.moviedb.presenter.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,7 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import me.assel.moviedb.DbDetailActivity;
+import me.assel.moviedb.DetailsActivity;
 import me.assel.moviedb.R;
 import me.assel.moviedb.api.response.Movies;
 
@@ -49,7 +49,7 @@ public class DbAdapter extends RecyclerView.Adapter<DbAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 Log.d("click", "Result title = "+ result.getTitle());
-                Intent i = new Intent(mContext, DbDetailActivity.class);
+                Intent i = new Intent(mContext, DetailsActivity.class);
                 i.putExtra("id", result.getId());
                 mContext.startActivityForResult(i, 1);
             }

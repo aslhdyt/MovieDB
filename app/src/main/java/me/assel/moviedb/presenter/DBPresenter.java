@@ -15,9 +15,9 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.assel.moviedb.adapter.DbAdapter;
 import me.assel.moviedb.api.response.Movies;
 import me.assel.moviedb.contentProvider.Contract;
+import me.assel.moviedb.presenter.adapter.MovieAdapter;
 
 /**
  * Created by assel on 5/28/17.
@@ -28,14 +28,10 @@ public class DBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
     private RecyclerView recyclerView;
     private GridLayoutManager mLayoutManager;
 
-    private DbAdapter adapter;
+    private MovieAdapter adapter;
 
     int TASK_LOADER_ID = 0;
 
-
-    private static final String STATE_MOVIE = "movies_state";
-    private int PAGE_SIZE = 0;
-    private int CUR_PAGE = 0;
 
     public DBPresenter(Activity activity, RecyclerView mRecyclerView, Bundle savedInstanceState) {
         context = activity;
@@ -51,6 +47,7 @@ public class DBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
 //        RealmResults<DbObject> list = realm.where(DbObject.class)
 //                .findAll();
 //        realm.commitTransaction();
+        activity.getLoaderManager().initLoader(TASK_LOADER_ID, null, this);
     }
 
 
@@ -58,9 +55,6 @@ public class DBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
         mLayoutManager.setSpanCount(column);
     }
 
-    public void refresh() {
-        recyclerView.setAdapter(adapter);
-    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -102,7 +96,7 @@ public class DBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        List moviesList = new ArrayList();
+        List<Movies> moviesList = new ArrayList<Movies>();
         if (data.moveToFirst()) {
             do {
                 //reconvert from cursor to Movies object
@@ -117,19 +111,26 @@ public class DBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
                 movies.setOriginalLanguage(data.getString(data.getColumnIndex("original_language")));
                 movies.setOriginalTitle(data.getString(data.getColumnIndex("original_title")));
 //                movies.setGenreIds(data)
+                movies.setBackdropPath(data.getString(data.getColumnIndex("backdrop_path")));
+                movies.setAdult(data.getString(data.getColumnIndex("adult")).equals("true"));
+                movies.setOverview(data.getString(data.getColumnIndex("overview")));
+                movies.setReleaseDate(data.getString(data.getColumnIndex("release_date")));
 
+                moviesList.add(movies);
             } while (data.moveToNext());
         }
-        adapter = new DbAdapter((Activity) context, moviesList);
+        adapter = new MovieAdapter(context, moviesList);
         recyclerView.setAdapter(adapter);
     }
 
+
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        recyclerView.setAdapter(null);
     }
 
     public void onResume(Activity activity) {
+
         activity.getLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
     }
 }
