@@ -11,10 +11,11 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-import io.realm.RealmResults;
+import java.util.List;
+
 import me.assel.moviedb.DbDetailActivity;
 import me.assel.moviedb.R;
-import me.assel.moviedb.contentProvider.DbObject;
+import me.assel.moviedb.api.response.Movies;
 
 import static me.assel.moviedb.AppConfig.IMG_BASE_URL;
 
@@ -24,10 +25,10 @@ import static me.assel.moviedb.AppConfig.IMG_BASE_URL;
 
 public class DbAdapter extends RecyclerView.Adapter<DbAdapter.ViewHolder> {
     private Activity mContext;
-    private RealmResults<DbObject> moviesList;
-    public DbAdapter(Activity mContext, RealmResults<DbObject> list) {
+    private List<Movies> movieList;
+    public DbAdapter(Activity mContext, List<Movies> data) {
         this.mContext = mContext;
-        this.moviesList = list;
+        this.movieList = data;
     }
 
     @Override
@@ -39,9 +40,10 @@ public class DbAdapter extends RecyclerView.Adapter<DbAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(DbAdapter.ViewHolder holder, int position) {
-        final DbObject result = moviesList.get(position);
+//        final DbObject result = movieList.get(position);
+        final Movies result = movieList.get(position);
 
-        Picasso.with(mContext).load(IMG_BASE_URL+ result.getImgUrl()).placeholder(R.drawable.video).into(holder.poster);
+        Picasso.with(mContext).load(IMG_BASE_URL+ result.getPosterPath()).placeholder(R.drawable.video).into(holder.poster);
 
         holder.poster.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +58,7 @@ public class DbAdapter extends RecyclerView.Adapter<DbAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return moviesList.size();
+        return movieList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

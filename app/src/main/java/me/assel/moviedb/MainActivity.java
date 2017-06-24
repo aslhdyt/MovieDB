@@ -84,6 +84,13 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        moviePresenter3.onResume(this);
+
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         moviePresenter1.saveInstance(outState);
@@ -101,4 +108,5 @@ public class MainActivity extends Activity {
         }
 
     }
+
 }

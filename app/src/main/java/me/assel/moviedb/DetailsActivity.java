@@ -1,5 +1,7 @@
 package me.assel.moviedb;
 
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,19 +11,21 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 import me.assel.moviedb.adapter.ReviewAdapter;
 import me.assel.moviedb.adapter.VideoAdapter;
 import me.assel.moviedb.api.request.RequestInterface;
 import me.assel.moviedb.api.response.Movies;
 import me.assel.moviedb.api.response.Reviews;
 import me.assel.moviedb.api.response.Videos;
+import me.assel.moviedb.contentProvider.Contract;
 import me.assel.moviedb.contentProvider.DbObject;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -162,26 +166,40 @@ public class DetailsActivity extends AppCompatActivity {
 
 
     public void like (View view) {
-        realm = Realm.getInstance(realmConfig());
-        realm.beginTransaction();
-        ImageView v = (ImageView) view;
+//        realm = Realm.getInstance(realmConfig());
+//        realm.beginTransaction();
+//        ImageView v = (ImageView) view;
         if (!isLike) {
-            DbObject db = realm.createObject(DbObject.class, movie.getId());
-            db.setTitle(movie.getTitle());
-            db.setRelease(movie.getReleaseDate());
-            db.setOverview(movie.getOverview());
-            db.setRating(movie.getVoteAverage());
-            db.setImgUrl(movie.getPosterPath());
-            setLike(true);
+            // TODO: 6/23/17 INSERT to content provider
+            Gson gson = new Gson();
+            String json = gson.toJson(movie);
+            Log.d("JSON", json);
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(Contract.Entry.JSON, json);
+
+            Uri uri = getContentResolver().insert(Contract.Entry.CONTENT_URI, contentValues);
+
+            if (uri != null) {
+                Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+                setLike(true);
+            }
+//            DbObject db = realm.createObject(DbObject.class, movie.getId());
+//            db.setTitle(movie.getTitle());
+//            db.setRelease(movie.getReleaseDate());
+//            db.setOverview(movie.getOverview());
+//            db.setRating(movie.getVoteAverage());
+//            db.setImgUrl(movie.getPosterPath());
         } else {
-            RealmResults<DbObject> result = realm
-                    .where(DbObject.class)
-                    .equalTo("title", movie.getTitle())
-                    .findAll();
-            result.deleteAllFromRealm();
+            // TODO: 6/23/17 DELETE from content provider
+//            RealmResults<DbObject> result = realm
+//                    .where(DbObject.class)
+//                    .equalTo("title", movie.getTitle())
+//                    .findAll();
+//            result.deleteAllFromRealm();
             setLike(false);
         }
-        realm.commitTransaction();
+//        realm.commitTransaction();
     }
 
     void setLike(boolean l) {

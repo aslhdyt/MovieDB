@@ -1,7 +1,8 @@
 package me.assel.moviedb.api.utils;
 
 import io.realm.RealmObject;
-//https://gist.github.com/cmelchior/1a97377df0c49cd4fca9
+
+// https://gist.github.com/cmelchior/1a97377df0c49cd4fca9
 public class RealmInt extends RealmObject {
     private int val;
 
