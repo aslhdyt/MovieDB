@@ -8,12 +8,12 @@ import android.util.Log;
 import android.widget.TabHost;
 
 import io.realm.Realm;
-import me.assel.moviedb.presenter.DBPresenter;
-import me.assel.moviedb.presenter.MoviePresenter;
+import me.assel.moviedb.presenter.FromDBPresenter;
+import me.assel.moviedb.presenter.FromApiPresenter;
 
 public class MainActivity extends Activity {
-    private MoviePresenter moviePresenter1, moviePresenter2;
-    private DBPresenter moviePresenter3;
+    private FromApiPresenter moviePresenter1, moviePresenter2;
+    private FromDBPresenter moviePresenter3;
     TabHost host;
 
     @Override
@@ -58,13 +58,13 @@ public class MainActivity extends Activity {
         }
 
         RecyclerView mRecycler1 = (RecyclerView) findViewById(R.id.recycler_view1);
-        moviePresenter1 = new MoviePresenter(this, mRecycler1, savedInstanceState);
+        moviePresenter1 = new FromApiPresenter(this, mRecycler1, savedInstanceState);
 
         RecyclerView mRecycler2 = (RecyclerView) findViewById(R.id.recycler_view2);
-        moviePresenter2 = new MoviePresenter(this, mRecycler2, savedInstanceState);
+        moviePresenter2 = new FromApiPresenter(this, mRecycler2, savedInstanceState);
 
         RecyclerView mRecycler3 = (RecyclerView) findViewById(R.id.recycler_view3);
-        moviePresenter3 = new DBPresenter(this, mRecycler3, savedInstanceState);
+        moviePresenter3 = new FromDBPresenter(this, mRecycler3, savedInstanceState);
 
         if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
             moviePresenter1.setColumn(2);

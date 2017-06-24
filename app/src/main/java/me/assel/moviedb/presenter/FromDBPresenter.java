@@ -23,7 +23,7 @@ import me.assel.moviedb.presenter.adapter.MovieAdapter;
  * Created by assel on 5/28/17.
  */
 
-public class DBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
+public class FromDBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
     private Context context;
     private RecyclerView recyclerView;
     private GridLayoutManager mLayoutManager;
@@ -33,7 +33,7 @@ public class DBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
     int TASK_LOADER_ID = 0;
 
 
-    public DBPresenter(Activity activity, RecyclerView mRecyclerView, Bundle savedInstanceState) {
+    public FromDBPresenter(Activity activity, RecyclerView mRecyclerView, Bundle savedInstanceState) {
         context = activity;
         recyclerView = mRecyclerView;
         mLayoutManager = new GridLayoutManager(context, 2);
@@ -41,12 +41,6 @@ public class DBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-
-//        Realm realm = Realm.getInstance(realmConfig());
-//        realm.beginTransaction();
-//        RealmResults<DbObject> list = realm.where(DbObject.class)
-//                .findAll();
-//        realm.commitTransaction();
         activity.getLoaderManager().initLoader(TASK_LOADER_ID, null, this);
     }
 

@@ -11,22 +11,19 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import io.realm.Realm;
-import me.assel.moviedb.presenter.adapter.ReviewAdapter;
-import me.assel.moviedb.presenter.adapter.VideoAdapter;
 import me.assel.moviedb.api.request.RequestInterface;
 import me.assel.moviedb.api.response.Movies;
 import me.assel.moviedb.api.response.Reviews;
 import me.assel.moviedb.api.response.Videos;
 import me.assel.moviedb.contentProvider.Contract;
-import me.assel.moviedb.contentProvider.DbObject;
+import me.assel.moviedb.presenter.adapter.ReviewAdapter;
+import me.assel.moviedb.presenter.adapter.VideoAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,7 +33,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static me.assel.moviedb.AppConfig.API_KEY;
 import static me.assel.moviedb.AppConfig.BASE_URL;
 import static me.assel.moviedb.AppConfig.IMG_BASE_URL;
-import static me.assel.moviedb.AppConfig.realmConfig;
 
 public class DetailsActivity extends AppCompatActivity {
     ImageView poster, like;
@@ -47,8 +43,6 @@ public class DetailsActivity extends AppCompatActivity {
     Movies movie;
     List<Videos.Result> videos;
     List<Reviews.Result> reviews;
-
-    Realm realm;
 
     boolean isLike;
 
@@ -74,18 +68,19 @@ public class DetailsActivity extends AppCompatActivity {
         overView.setText(movie.getOverview());
         star.setText(String.valueOf(movie.getVoteAverage()));
 
-        realm = Realm.getInstance(realmConfig());
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                DbObject result =  realm.where(DbObject.class)
-                        .equalTo("id", movie.getId())
-                        .findFirst();
-                if (result != null) {
-                    setLike(true);
-                }
-            }
-        });
+        // TODO: 6/24/17 determine movie is liked
+//        realm = Realm.getInstance(realmConfig());
+//        realm.executeTransaction(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm realm) {
+//                DbObject result =  realm.where(DbObject.class)
+//                        .equalTo("id", movie.getId())
+//                        .findFirst();
+//                if (result != null) {
+//                    setLike(true);
+//                }
+//            }
+//        });
 
 
 
@@ -166,9 +161,6 @@ public class DetailsActivity extends AppCompatActivity {
 
 
     public void like (View view) {
-//        realm = Realm.getInstance(realmConfig());
-//        realm.beginTransaction();
-//        ImageView v = (ImageView) view;
         if (!isLike) {
             // TODO: 6/23/17 INSERT to content provider
             Gson gson = new Gson();
@@ -181,25 +173,12 @@ public class DetailsActivity extends AppCompatActivity {
             Uri uri = getContentResolver().insert(Contract.Entry.CONTENT_URI, contentValues);
 
             if (uri != null) {
-                Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
                 setLike(true);
             }
-//            DbObject db = realm.createObject(DbObject.class, movie.getId());
-//            db.setTitle(movie.getTitle());
-//            db.setRelease(movie.getReleaseDate());
-//            db.setOverview(movie.getOverview());
-//            db.setRating(movie.getVoteAverage());
-//            db.setImgUrl(movie.getPosterPath());
         } else {
             // TODO: 6/23/17 DELETE from content provider
-//            RealmResults<DbObject> result = realm
-//                    .where(DbObject.class)
-//                    .equalTo("title", movie.getTitle())
-//                    .findAll();
-//            result.deleteAllFromRealm();
             setLike(false);
         }
-//        realm.commitTransaction();
     }
 
     void setLike(boolean l) {

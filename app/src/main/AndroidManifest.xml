@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name="me.assel.moviedb.DetailsActivity"/>
-        <activity android:name="me.assel.moviedb.DbDetailActivity"/>
+
         <provider
             android:authorities="me.assel.moviedb.contentProvider"
             android:name="me.assel.moviedb.contentProvider.FavContentProvider"

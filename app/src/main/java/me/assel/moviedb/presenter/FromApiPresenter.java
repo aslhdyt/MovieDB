@@ -29,7 +29,7 @@ import static me.assel.moviedb.AppConfig.retrofitBuilder;
  * Created by assel on 5/23/17.
  */
 
-public class MoviePresenter {
+public class FromApiPresenter {
     private static final String STATE_MOVIE = "movies_state";
     private String TAG = "presenter";
 
@@ -46,7 +46,7 @@ public class MoviePresenter {
     private int CUR_PAGE = 0;
 
 
-    public MoviePresenter(Context ctx, final RecyclerView mRecyclerView, Bundle savedInstanceState) {
+    public FromApiPresenter(Context ctx, final RecyclerView mRecyclerView, Bundle savedInstanceState) {
         context = ctx;
         recyclerView = mRecyclerView;
         mLayoutManager = new GridLayoutManager(context, 2);
