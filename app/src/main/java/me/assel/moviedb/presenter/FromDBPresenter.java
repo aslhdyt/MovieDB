@@ -15,7 +15,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.assel.moviedb.api.response.Movies;
+import me.assel.moviedb.model.Movies;
 import me.assel.moviedb.contentProvider.Contract;
 import me.assel.moviedb.presenter.adapter.MovieAdapter;
 

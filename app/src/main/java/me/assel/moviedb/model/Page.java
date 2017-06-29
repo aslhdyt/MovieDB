@@ -1,4 +1,4 @@
-package me.assel.moviedb.api.response;
+package me.assel.moviedb.model;
 
 /**
  * Created by assel on 6/20/17.

@@ -1,6 +1,7 @@
 package me.assel.moviedb;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,10 +18,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import me.assel.moviedb.api.request.RequestInterface;
-import me.assel.moviedb.api.response.Movies;
-import me.assel.moviedb.api.response.Reviews;
-import me.assel.moviedb.api.response.Videos;
+import me.assel.moviedb.api.RequestInterface;
+import me.assel.moviedb.model.Movies;
+import me.assel.moviedb.model.Reviews;
+import me.assel.moviedb.model.Videos;
 import me.assel.moviedb.contentProvider.Contract;
 import me.assel.moviedb.presenter.adapter.ReviewAdapter;
 import me.assel.moviedb.presenter.adapter.VideoAdapter;
@@ -69,21 +70,14 @@ public class DetailsActivity extends AppCompatActivity {
         star.setText(String.valueOf(movie.getVoteAverage()));
 
         // TODO: 6/24/17 determine movie is liked
-//        realm = Realm.getInstance(realmConfig());
-//        realm.executeTransaction(new Realm.Transaction() {
-//            @Override
-//            public void execute(Realm realm) {
-//                DbObject result =  realm.where(DbObject.class)
-//                        .equalTo("id", movie.getId())
-//                        .findFirst();
-//                if (result != null) {
-//                    setLike(true);
-//                }
-//            }
-//        });
-
-
-
+        String stringId = Integer.toString(movie.getId());
+        Uri uri = Contract.Entry.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(stringId).build();
+        Cursor singleData = getContentResolver().query(uri, null, null, null, null);
+        if (singleData != null) {
+            singleData.close();
+            setLike(true);
+        }
 
         //init tab
         host = (TabHost)findViewById(R.id.TabHost_content);
@@ -177,7 +171,13 @@ public class DetailsActivity extends AppCompatActivity {
             }
         } else {
             // TODO: 6/23/17 DELETE from content provider
-            setLike(false);
+            String stringId = Integer.toString(movie.getId());
+            Uri uri = Contract.Entry.CONTENT_URI;
+            uri = uri.buildUpon().appendPath(stringId).build();
+            int taskDelete = getContentResolver().delete(uri, null, null);
+            if (taskDelete != 0) {
+                setLike(false);
+            }
         }
     }
 

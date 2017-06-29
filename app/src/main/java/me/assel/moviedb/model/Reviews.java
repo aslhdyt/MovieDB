@@ -1,4 +1,4 @@
-package me.assel.moviedb.api.response;
+package me.assel.moviedb.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

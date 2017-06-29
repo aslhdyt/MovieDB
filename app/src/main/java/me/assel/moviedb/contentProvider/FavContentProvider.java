@@ -16,10 +16,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import io.realm.Realm;
+import io.realm.RealmObject;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmException;
 import me.assel.moviedb.AppConfig;
-import me.assel.moviedb.api.response.Movies;
+import me.assel.moviedb.model.Movies;
 
 import static me.assel.moviedb.AppConfig.realmConfig;
 
@@ -58,6 +59,10 @@ public class FavContentProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         // TODO: 6/23/17 find solution for Realm to Cursor 
         MatrixCursor retCursor = null;
+        //because realm doesnt support convert to Cursor object, i need to make custom Cursor column
+        String[] column = {"id", "vote_count", "video", "vote_average", "title", "popularity",
+                "poster_path", "original_language", "original_title", "genre_ids", "backdrop_path",
+                "adult", "overview", "release_date"};
         switch (match) {
             case FAV:
                 
@@ -65,10 +70,6 @@ public class FavContentProvider extends ContentProvider {
                 RealmResults<Movies> list = realm.where(Movies.class).findAll();
                 realm.commitTransaction();
 
-                //because realm doesnt support convert to Cursor object, i need to make custom Cursor column
-                String[] column = {"id", "vote_count", "video", "vote_average", "title", "popularity",
-                        "poster_path", "original_language", "original_title", "genre_ids", "backdrop_path",
-                        "adult", "overview", "release_date"};
                 retCursor = new MatrixCursor(column);
                 for (Movies movie : list) {
                     Object[] rowData = {
@@ -76,13 +77,30 @@ public class FavContentProvider extends ContentProvider {
                             movie.getTitle(), movie.getPopularity(), movie.getPosterPath(), movie.getOriginalLanguage(), movie.getOriginalTitle(),
                             movie.getGenreIds(), movie.getBackdropPath(), movie.isAdult(), movie.getOverview(), movie.getReleaseDate()
                     };
-                    Log.d("REALM","title from db = " + movie.getTitle());
-                    Log.d("REALM","genre id = " + movie.getGenreIds());
                     retCursor.addRow(rowData);
+                    retCursor.setNotificationUri(getContext().getContentResolver(), uri);
                 }
+                break;
+            case FAV_ID:
+                final int id = Integer.parseInt(uri.getPathSegments().get(1));
+
+                realm.beginTransaction();
+                Movies movie = realm.where(Movies.class).equalTo("id", id).findFirst();
+                if (movie != null) {
+                    retCursor = new MatrixCursor(column);
+                    Object[] rowData = {
+                            movie.getId(), movie.getVoteCount(), movie.isVideo(), movie.getVoteAverage(),
+                            movie.getTitle(), movie.getPopularity(), movie.getPosterPath(), movie.getOriginalLanguage(), movie.getOriginalTitle(),
+                            movie.getGenreIds(), movie.getBackdropPath(), movie.isAdult(), movie.getOverview(), movie.getReleaseDate()
+                    };
+                    retCursor.addRow(rowData);
+                    retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+                }
+                realm.commitTransaction();
+                break;
 
         }
-        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        realm.close();
         return retCursor;
     }
 
@@ -115,7 +133,7 @@ public class FavContentProvider extends ContentProvider {
                 Log.d("Realm", "id = "+id);
                 if(id > 0) {
                     returnUri = ContentUris.withAppendedId(Contract.Entry.CONTENT_URI, id);
-                    Log.d("Provider", "retrunUri = "+returnUri);
+                    Log.d("Provider", "returnUri = "+returnUri);
                 } else {
                     throw new RealmException("Failed to insert row into "+uri);
                 }
@@ -130,7 +148,33 @@ public class FavContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        Realm realm = Realm.getInstance(realmConfig());
+        int match = sUriMatcher.match(uri);
+
+        int taskDelete = 0;
+        switch (match) {
+            case FAV_ID:
+                final int id = Integer.parseInt(uri.getPathSegments().get(1));
+
+                realm.beginTransaction();
+
+                Movies query = realm.where(Movies.class).equalTo("id", id).findFirst();
+                if (RealmObject.isValid(query)) {
+                    Log.d("DELETE", "movies to delete = "+query.getTitle());
+                    RealmObject.deleteFromRealm(query);
+                    taskDelete = 1;
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }else {
+                    Log.d("DELETE", "unsuccessful");
+                }
+
+                realm.commitTransaction();
+
+                realm.close();
+
+
+        }
+        return taskDelete;
     }
 
     @Override

@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import me.assel.moviedb.R;
-import me.assel.moviedb.api.response.Videos;
+import me.assel.moviedb.model.Videos;
 
 /**
  * Created by assel on 5/26/17.

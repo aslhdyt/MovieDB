@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import me.assel.moviedb.R;
-import me.assel.moviedb.api.response.Reviews;
+import me.assel.moviedb.model.Reviews;
 
 /**
  * Created by assel on 5/26/17.

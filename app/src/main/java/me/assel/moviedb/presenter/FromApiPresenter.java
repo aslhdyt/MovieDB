@@ -13,9 +13,9 @@ import java.util.List;
 
 import me.assel.moviedb.R;
 import me.assel.moviedb.presenter.adapter.MovieAdapter;
-import me.assel.moviedb.api.request.RequestInterface;
-import me.assel.moviedb.api.response.Movies;
-import me.assel.moviedb.api.response.Page;
+import me.assel.moviedb.api.RequestInterface;
+import me.assel.moviedb.model.Movies;
+import me.assel.moviedb.model.Page;
 import me.assel.moviedb.api.utils.EndlessRecyclerViewScrollListener;
 import retrofit2.Call;
 import retrofit2.Callback;

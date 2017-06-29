@@ -1,4 +1,4 @@
-package me.assel.moviedb.api.response;
+package me.assel.moviedb.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

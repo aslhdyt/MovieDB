@@ -1,8 +1,8 @@
-package me.assel.moviedb.api.request;
+package me.assel.moviedb.api;
 
-import me.assel.moviedb.api.response.Page;
-import me.assel.moviedb.api.response.Reviews;
-import me.assel.moviedb.api.response.Videos;
+import me.assel.moviedb.model.Page;
+import me.assel.moviedb.model.Reviews;
+import me.assel.moviedb.model.Videos;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;

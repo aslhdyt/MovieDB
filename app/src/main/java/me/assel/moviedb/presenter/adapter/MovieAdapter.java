@@ -15,7 +15,7 @@ import java.util.List;
 
 import me.assel.moviedb.DetailsActivity;
 import me.assel.moviedb.R;
-import me.assel.moviedb.api.response.Movies;
+import me.assel.moviedb.model.Movies;
 
 import static me.assel.moviedb.AppConfig.IMG_BASE_URL;
 
