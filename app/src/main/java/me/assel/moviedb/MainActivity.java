@@ -3,17 +3,18 @@ package me.assel.moviedb;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.TabHost;
 
 import io.realm.Realm;
-import me.assel.moviedb.presenter.FromDBPresenter;
 import me.assel.moviedb.presenter.FromApiPresenter;
+import me.assel.moviedb.presenter.FromDBPresenter;
 
 public class MainActivity extends Activity {
     private FromApiPresenter moviePresenter1, moviePresenter2;
     private FromDBPresenter moviePresenter3;
+    private SwipeRefreshLayout refreshLayout;
     TabHost host;
 
     @Override
@@ -45,26 +46,40 @@ public class MainActivity extends Activity {
         spec.setIndicator("Favourite");
         host.addTab(spec);
 
-        host.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
-            @Override
-            public void onTabChanged(String tabId) {
-                    Log.d("tab num", String.valueOf(host.getCurrentTab()));
-            }
-        });
+
 
 
         if(savedInstanceState != null) {
             host.setCurrentTab(savedInstanceState.getInt("Tab"));
         }
 
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //check on which tab;
+                switch (host.getCurrentTab()) {
+                    case 0:
+                        moviePresenter1.loadData();
+                        break;
+                    case 1:
+                        moviePresenter2.loadData();
+                        break;
+                    case 2:
+                        moviePresenter3.loadData();
+                        break;
+                }
+            }
+        });
+
         RecyclerView mRecycler1 = (RecyclerView) findViewById(R.id.recycler_view1);
-        moviePresenter1 = new FromApiPresenter(this, mRecycler1, savedInstanceState);
+        moviePresenter1 = new FromApiPresenter(this, mRecycler1, savedInstanceState, refreshLayout);
 
         RecyclerView mRecycler2 = (RecyclerView) findViewById(R.id.recycler_view2);
-        moviePresenter2 = new FromApiPresenter(this, mRecycler2, savedInstanceState);
+        moviePresenter2 = new FromApiPresenter(this, mRecycler2, savedInstanceState, refreshLayout);
 
         RecyclerView mRecycler3 = (RecyclerView) findViewById(R.id.recycler_view3);
-        moviePresenter3 = new FromDBPresenter(this, mRecycler3, savedInstanceState);
+        moviePresenter3 = new FromDBPresenter(this, mRecycler3, savedInstanceState, refreshLayout);
 
         if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
             moviePresenter1.setColumn(2);
@@ -76,11 +91,10 @@ public class MainActivity extends Activity {
             moviePresenter2.setColumn(4);
             moviePresenter3.setColumn(4);
         }
+
+
     }
 
-//    private void refreshRealm() {
-//        moviePresenter3.refresh();
-//    }
 
     @Override
     protected void onResume() {

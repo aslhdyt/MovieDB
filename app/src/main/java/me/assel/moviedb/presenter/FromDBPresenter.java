@@ -3,10 +3,10 @@ package me.assel.moviedb.presenter;
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
-import android.content.Context;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,8 +15,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.assel.moviedb.model.Movies;
 import me.assel.moviedb.contentProvider.Contract;
+import me.assel.moviedb.model.Movies;
 import me.assel.moviedb.presenter.adapter.MovieAdapter;
 
 /**
@@ -24,24 +24,31 @@ import me.assel.moviedb.presenter.adapter.MovieAdapter;
  */
 
 public class FromDBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
-    private Context context;
     private RecyclerView recyclerView;
     private GridLayoutManager mLayoutManager;
 
     private MovieAdapter adapter;
 
+    SwipeRefreshLayout swipeRefresh;
+
     int TASK_LOADER_ID = 0;
+    private Activity mActivity;
 
 
-    public FromDBPresenter(Activity activity, RecyclerView mRecyclerView, Bundle savedInstanceState) {
-        context = activity;
+    public FromDBPresenter(Activity activity, RecyclerView mRecyclerView, Bundle savedInstanceState, SwipeRefreshLayout refreshLayout) {
+        mActivity = activity;
         recyclerView = mRecyclerView;
-        mLayoutManager = new GridLayoutManager(context, 2);
+        mLayoutManager = new GridLayoutManager(mActivity, 2);
+        swipeRefresh = refreshLayout;
 
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        activity.getLoaderManager().initLoader(TASK_LOADER_ID, null, this);
+        loadData();
+    }
+
+    public void loadData() {
+        mActivity.getLoaderManager().initLoader(TASK_LOADER_ID, null, this);
     }
 
 
@@ -52,10 +59,11 @@ public class FromDBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new AsyncTaskLoader<Cursor>(context) {
+        return new AsyncTaskLoader<Cursor>(mActivity) {
             Cursor mTaskData = null;
             @Override
             protected void onStartLoading() {
+                swipeRefresh.setRefreshing(true);
                 if (mTaskData != null) {
                     // Delivers any previously loaded data immediately
                     deliverResult(mTaskData);
@@ -68,7 +76,7 @@ public class FromDBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
             @Override
             public Cursor loadInBackground() {
                 try {
-                    return context.getContentResolver().query(Contract.Entry.CONTENT_URI,
+                    return mActivity.getContentResolver().query(Contract.Entry.CONTENT_URI,
                             null,
                             null,
                             null,
@@ -113,8 +121,9 @@ public class FromDBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
                 moviesList.add(movies);
             } while (data.moveToNext());
         }
-        adapter = new MovieAdapter(context, moviesList);
+        adapter = new MovieAdapter(mActivity, moviesList);
         recyclerView.setAdapter(adapter);
+        swipeRefresh.setRefreshing(false);
     }
 
 
@@ -124,7 +133,6 @@ public class FromDBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
     }
 
     public void onResume(Activity activity) {
-
         activity.getLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
     }
 }
