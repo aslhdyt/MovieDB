@@ -18,11 +18,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.assel.moviedb.api.RequestInterface;
+import me.assel.moviedb.contentProvider.Contract;
 import me.assel.moviedb.model.Movies;
 import me.assel.moviedb.model.Reviews;
 import me.assel.moviedb.model.Videos;
-import me.assel.moviedb.contentProvider.Contract;
 import me.assel.moviedb.presenter.adapter.ReviewAdapter;
 import me.assel.moviedb.presenter.adapter.VideoAdapter;
 import retrofit2.Call;
@@ -36,8 +38,12 @@ import static me.assel.moviedb.AppConfig.BASE_URL;
 import static me.assel.moviedb.AppConfig.IMG_BASE_URL;
 
 public class DetailsActivity extends AppCompatActivity {
-    ImageView poster, like;
-    TextView title, release, overView, star;
+    @BindView(R.id.imageView_poster) ImageView poster;
+    @BindView(R.id.imageView_like) ImageView like;
+    @BindView(R.id.textView_title) TextView title;
+    @BindView(R.id.textView_release) TextView release;
+    @BindView(R.id.textView_overView) TextView overView;
+    @BindView(R.id.textView_star) TextView star;
 
     TabHost host;
 
@@ -52,13 +58,7 @@ public class DetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-        poster = (ImageView) findViewById(R.id.imageView_poster);
-        title = (TextView) findViewById(R.id.textView_author);
-        release = (TextView) findViewById(R.id.textView_release);
-        overView = (TextView) findViewById(R.id.textView_overView);
-        star = (TextView) findViewById(R.id.textView_star);
-        like = (ImageView) findViewById(R.id.imageView_like);
-
+        ButterKnife.bind(this);
 
         movie = getIntent().getExtras().getParcelable("result");
         if(movie == null) return;
@@ -69,7 +69,7 @@ public class DetailsActivity extends AppCompatActivity {
         overView.setText(movie.getOverview());
         star.setText(String.valueOf(movie.getVoteAverage()));
 
-        // TODO: 6/24/17 determine movie is liked
+        //determine movie is liked
         String stringId = Integer.toString(movie.getId());
         Uri uri = Contract.Entry.CONTENT_URI;
         uri = uri.buildUpon().appendPath(stringId).build();
@@ -156,7 +156,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     public void like (View view) {
         if (!isLike) {
-            // TODO: 6/23/17 INSERT to content provider
+            //INSERT to content provider
             Gson gson = new Gson();
             String json = gson.toJson(movie);
             Log.d("JSON", json);
@@ -170,7 +170,7 @@ public class DetailsActivity extends AppCompatActivity {
                 setLike(true);
             }
         } else {
-            // TODO: 6/23/17 DELETE from content provider
+            // DELETE from content provider
             String stringId = Integer.toString(movie.getId());
             Uri uri = Contract.Entry.CONTENT_URI;
             uri = uri.buildUpon().appendPath(stringId).build();

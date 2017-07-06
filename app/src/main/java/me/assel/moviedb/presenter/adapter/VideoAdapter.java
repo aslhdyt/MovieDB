@@ -50,6 +50,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=" + items.getKey()));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
         });
@@ -69,7 +70,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
             super(view);
             icon = (ImageView)view.findViewById(R.id.imageView_icon);
             parent = (RelativeLayout)view.findViewById(R.id.relative_layout_listVideo);
-            title = (TextView) view.findViewById(R.id.textView_author);
+            title = (TextView) view.findViewById(R.id.textView_title);
             type = (TextView) view.findViewById(R.id.textView_type);
         }
     }
