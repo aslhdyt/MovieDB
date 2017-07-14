@@ -6,22 +6,14 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import io.realm.RealmList;
-import io.realm.RealmModel;
-import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.RealmClass;
-import me.assel.moviedb.api.utils.RealmInt;
+public class Movies implements Parcelable {
 
-@RealmClass
-public class Movies implements RealmModel, Parcelable {
-
+    @SerializedName("id")
+    @Expose
+    private int id;
     @SerializedName("vote_count")
     @Expose
     private int voteCount;
-    @SerializedName("id")
-    @Expose
-    @PrimaryKey
-    private int id;
     @SerializedName("video")
     @Expose
     private boolean video;
@@ -43,11 +35,9 @@ public class Movies implements RealmModel, Parcelable {
     @SerializedName("original_title")
     @Expose
     private String originalTitle;
-
-    // TODO: 6/24/17 FIX cant fetch genre_ids because int Array
     @SerializedName("genre_ids")
     @Expose
-    private RealmList<RealmInt> genreIds;
+    private int[] genreIds;
     @SerializedName("backdrop_path")
     @Expose
     private String backdropPath;
@@ -66,8 +56,8 @@ public class Movies implements RealmModel, Parcelable {
     }
 
     protected Movies(Parcel in) {
-        voteCount = in.readInt();
         id = in.readInt();
+        voteCount = in.readInt();
         video = in.readByte() != 0;
         voteAverage = in.readFloat();
         title = in.readString();
@@ -75,6 +65,7 @@ public class Movies implements RealmModel, Parcelable {
         posterPath = in.readString();
         originalLanguage = in.readString();
         originalTitle = in.readString();
+        genreIds = in.createIntArray();
         backdropPath = in.readString();
         adult = in.readByte() != 0;
         overview = in.readString();
@@ -165,11 +156,11 @@ public class Movies implements RealmModel, Parcelable {
         this.originalTitle = originalTitle;
     }
 
-    public RealmList<RealmInt> getGenreIds() {
+    public int[] getGenreIds() {
         return genreIds;
     }
 
-    public void setGenreIds(RealmList<RealmInt> genreIds) {
+    public void setGenreIds(int[] genreIds) {
         this.genreIds = genreIds;
     }
 
@@ -211,19 +202,20 @@ public class Movies implements RealmModel, Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(voteCount);
-        dest.writeInt(id);
-        dest.writeByte((byte) (video ? 1 : 0));
-        dest.writeFloat(voteAverage);
-        dest.writeString(title);
-        dest.writeFloat(popularity);
-        dest.writeString(posterPath);
-        dest.writeString(originalLanguage);
-        dest.writeString(originalTitle);
-        dest.writeString(backdropPath);
-        dest.writeByte((byte) (adult ? 1 : 0));
-        dest.writeString(overview);
-        dest.writeString(releaseDate);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeInt(voteCount);
+        parcel.writeByte((byte) (video ? 1 : 0));
+        parcel.writeFloat(voteAverage);
+        parcel.writeString(title);
+        parcel.writeFloat(popularity);
+        parcel.writeString(posterPath);
+        parcel.writeString(originalLanguage);
+        parcel.writeString(originalTitle);
+        parcel.writeIntArray(genreIds);
+        parcel.writeString(backdropPath);
+        parcel.writeByte((byte) (adult ? 1 : 0));
+        parcel.writeString(overview);
+        parcel.writeString(releaseDate);
     }
 }

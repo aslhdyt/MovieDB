@@ -70,7 +70,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
             super(view);
             icon = (ImageView)view.findViewById(R.id.imageView_icon);
             parent = (RelativeLayout)view.findViewById(R.id.relative_layout_listVideo);
-            title = (TextView) view.findViewById(R.id.textView_title);
+            title = (TextView) view.findViewById(R.id.toolbar_title);
             type = (TextView) view.findViewById(R.id.textView_type);
         }
     }

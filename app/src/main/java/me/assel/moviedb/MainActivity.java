@@ -7,7 +7,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TabHost;
 
-import io.realm.Realm;
 import me.assel.moviedb.presenter.FromApiPresenter;
 import me.assel.moviedb.presenter.FromDBPresenter;
 
@@ -21,8 +20,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Realm.init(this);
 
         //init tab
         host = (TabHost)findViewById(R.id.tabHost);

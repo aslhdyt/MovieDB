@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -22,6 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.assel.moviedb.api.RequestInterface;
 import me.assel.moviedb.contentProvider.Contract;
+import me.assel.moviedb.contentProvider.DBHelper;
 import me.assel.moviedb.model.Movies;
 import me.assel.moviedb.model.Reviews;
 import me.assel.moviedb.model.Videos;
@@ -40,7 +41,7 @@ import static me.assel.moviedb.AppConfig.IMG_BASE_URL;
 public class DetailsActivity extends AppCompatActivity {
     @BindView(R.id.imageView_poster) ImageView poster;
     @BindView(R.id.imageView_like) ImageView like;
-    @BindView(R.id.textView_title) TextView title;
+    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout title;
     @BindView(R.id.textView_release) TextView release;
     @BindView(R.id.textView_overView) TextView overView;
     @BindView(R.id.textView_star) TextView star;
@@ -57,14 +58,15 @@ public class DetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details);
+        setContentView(R.layout.activity_details2);
         ButterKnife.bind(this);
 
         movie = getIntent().getExtras().getParcelable("result");
         if(movie == null) return;
 
         Picasso.with(this).load(IMG_BASE_URL+ movie.getPosterPath()).placeholder(R.drawable.video).into(poster);
-        title.setText(movie.getTitle());
+        title.setTitle(movie.getTitle());
+        title.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
         release.setText(movie.getReleaseDate());
         overView.setText(movie.getOverview());
         star.setText(String.valueOf(movie.getVoteAverage()));
@@ -74,7 +76,7 @@ public class DetailsActivity extends AppCompatActivity {
         Uri uri = Contract.Entry.CONTENT_URI;
         uri = uri.buildUpon().appendPath(stringId).build();
         Cursor singleData = getContentResolver().query(uri, null, null, null, null);
-        if (singleData != null) {
+        if (singleData.getCount() > 0) {
             singleData.close();
             setLike(true);
         }
@@ -157,12 +159,24 @@ public class DetailsActivity extends AppCompatActivity {
     public void like (View view) {
         if (!isLike) {
             //INSERT to content provider
-            Gson gson = new Gson();
-            String json = gson.toJson(movie);
-            Log.d("JSON", json);
 
             ContentValues contentValues = new ContentValues();
-            contentValues.put(Contract.Entry.JSON, json);
+            contentValues.put(DBHelper.ID, movie.getId());
+            contentValues.put(DBHelper.VOTE_COUNT, movie.getVoteCount());
+            contentValues.put(DBHelper.VIDEO, movie.isVideo());
+            contentValues.put(DBHelper.VOTE_AVERAGE, movie.getVoteAverage());
+            contentValues.put(DBHelper.TITLE, movie.getTitle());
+            contentValues.put(DBHelper.POPULARITY, movie.getPopularity());
+            contentValues.put(DBHelper.POSTER_PATH, movie.getPosterPath());
+            contentValues.put(DBHelper.ORIGINAL_LANGUAGE, movie.getOriginalLanguage());
+            contentValues.put(DBHelper.ORIGINAL_TITLE, movie.getOriginalTitle());
+            String genreIds_CSV = toCSV(movie.getGenreIds());
+            Log.d("CSV", genreIds_CSV);
+            contentValues.put(DBHelper.GENRE_IDS, genreIds_CSV);
+            contentValues.put(DBHelper.BACKDROP_PATH, movie.getBackdropPath());
+            contentValues.put(DBHelper.ADULT, movie.isAdult());
+            contentValues.put(DBHelper.OVERVIEW, movie.getOverview());
+            contentValues.put(DBHelper.RELEASE_DATE, movie.getReleaseDate());
 
             Uri uri = getContentResolver().insert(Contract.Entry.CONTENT_URI, contentValues);
 
@@ -180,6 +194,20 @@ public class DetailsActivity extends AppCompatActivity {
             }
         }
     }
+
+    private String toCSV(int[] genreIds) {
+        if (genreIds.length > 0) {
+            StringBuilder builder = new StringBuilder();
+            for (int n : genreIds) {
+                builder.append(String.valueOf(n)).append(",");
+            }
+            builder.deleteCharAt(builder.length() - 1);
+            return builder.toString();
+        } else {
+            return "";
+        }
+    }
+
 
     void setLike(boolean l) {
         if(l) {

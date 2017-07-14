@@ -1,28 +1,28 @@
 package me.assel.moviedb.contentProvider;
 
 import android.content.ContentProvider;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.MatrixCursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import io.realm.Realm;
-import io.realm.RealmObject;
-import io.realm.RealmResults;
-import io.realm.exceptions.RealmException;
-import me.assel.moviedb.AppConfig;
+import java.util.Arrays;
+import java.util.HashSet;
+
 import me.assel.moviedb.model.Movies;
 
-import static me.assel.moviedb.AppConfig.realmConfig;
+import static me.assel.moviedb.contentProvider.Contract.PATH_FAV;
 
 
 /**
@@ -30,6 +30,8 @@ import static me.assel.moviedb.AppConfig.realmConfig;
  */
 
 public class FavContentProvider extends ContentProvider {
+    private DBHelper database;
+
     public static final int FAV = 100;
     public static final int FAV_ID = 101;
 
@@ -38,69 +40,46 @@ public class FavContentProvider extends ContentProvider {
     public static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         //directory
-        uriMatcher.addURI(Contract.AUTHORITY, Contract.PATH_FAV, FAV);
+        uriMatcher.addURI(Contract.AUTHORITY, PATH_FAV, FAV);
 
         //single item
-        uriMatcher.addURI(Contract.AUTHORITY, Contract.PATH_FAV + "/#", FAV_ID);
+        uriMatcher.addURI(Contract.AUTHORITY, PATH_FAV + "/#", FAV_ID);
         return uriMatcher;
     }
 
 
     @Override
     public boolean onCreate() {
-        Context context = getContext();
-        return true;
+        database = new DBHelper(getContext());
+        return false;
     }
 
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        Realm realm  = Realm.getInstance(realmConfig());
         int match = sUriMatcher.match(uri);
         // TODO: 6/23/17 find solution for Realm to Cursor 
-        MatrixCursor retCursor = null;
+//        MatrixCursor retCursor = null;
         //because realm doesnt support convert to Cursor object, i need to make custom Cursor column
-        String[] column = {"id", "vote_count", "video", "vote_average", "title", "popularity",
-                "poster_path", "original_language", "original_title", "genre_ids", "backdrop_path",
-                "adult", "overview", "release_date"};
+//        String[] column = {"id", "vote_count", "video", "vote_average", "title", "popularity",
+//                "poster_path", "original_language", "original_title", "genre_ids", "backdrop_path",
+//                "adult", "overview", "release_date"};
+        SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+        checkColumns(projection);
+
+        queryBuilder.setTables(DBHelper.TABLE_MOVIE);
         switch (match) {
             case FAV:
-                
-                realm.beginTransaction();
-                RealmResults<Movies> list = realm.where(Movies.class).findAll();
-                realm.commitTransaction();
-
-                retCursor = new MatrixCursor(column);
-                for (Movies movie : list) {
-                    Object[] rowData = {
-                            movie.getId(), movie.getVoteCount(), movie.isVideo(), movie.getVoteAverage(),
-                            movie.getTitle(), movie.getPopularity(), movie.getPosterPath(), movie.getOriginalLanguage(), movie.getOriginalTitle(),
-                            movie.getGenreIds(), movie.getBackdropPath(), movie.isAdult(), movie.getOverview(), movie.getReleaseDate()
-                    };
-                    retCursor.addRow(rowData);
-                    retCursor.setNotificationUri(getContext().getContentResolver(), uri);
-                }
                 break;
             case FAV_ID:
-                final int id = Integer.parseInt(uri.getPathSegments().get(1));
-
-                realm.beginTransaction();
-                Movies movie = realm.where(Movies.class).equalTo("id", id).findFirst();
-                if (movie != null) {
-                    retCursor = new MatrixCursor(column);
-                    Object[] rowData = {
-                            movie.getId(), movie.getVoteCount(), movie.isVideo(), movie.getVoteAverage(),
-                            movie.getTitle(), movie.getPopularity(), movie.getPosterPath(), movie.getOriginalLanguage(), movie.getOriginalTitle(),
-                            movie.getGenreIds(), movie.getBackdropPath(), movie.isAdult(), movie.getOverview(), movie.getReleaseDate()
-                    };
-                    retCursor.addRow(rowData);
-                    retCursor.setNotificationUri(getContext().getContentResolver(), uri);
-                }
-                realm.commitTransaction();
+                queryBuilder.appendWhere(DBHelper.ID
+                    + "=" + uri.getLastPathSegment());
                 break;
-
         }
-        realm.close();
+        SQLiteDatabase db = database.getWritableDatabase();
+        Cursor retCursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+        retCursor.setNotificationUri(getContext().getContentResolver(),uri);
+
         return retCursor;
     }
 
@@ -113,72 +92,75 @@ public class FavContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        Realm realm = Realm.getInstance(realmConfig());
         int match = sUriMatcher.match(uri);
-        Log.d("INSERT", "URI = "+uri);
-
-        Gson gson = AppConfig.gsonBuilder();
-        Movies movies = gson.fromJson(values.getAsString(Contract.Entry.JSON), new TypeToken<Movies>(){}.getType());
-
-        Log.d("MOVIES", "genreIDs = "+movies.getGenreIds());
-
-        Uri returnUri;
+        SQLiteDatabase sqlDB = database.getWritableDatabase();
+        long id = 0;
         switch (match) {
             case FAV:
-                realm.beginTransaction();
-                Movies realmTransaction= realm.copyToRealmOrUpdate(movies);
-                long id = realmTransaction.getId();
-                realm.commitTransaction();
-                realm.close();
-                Log.d("Realm", "id = "+id);
-                if(id > 0) {
-                    returnUri = ContentUris.withAppendedId(Contract.Entry.CONTENT_URI, id);
-                    Log.d("Provider", "returnUri = "+returnUri);
-                } else {
-                    throw new RealmException("Failed to insert row into "+uri);
-                }
+                id = sqlDB.insert(DBHelper.TABLE_MOVIE, null, values);
                 break;
             default:
-                throw new UnsupportedOperationException("Unknow uri: "+uri);
+                throw new UnsupportedOperationException("Unknown uri: "+uri);
         }
         getContext().getContentResolver().notifyChange(uri, null);
-
-        return returnUri;
+        return Uri.parse(PATH_FAV + "/" + id);
     }
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        Realm realm = Realm.getInstance(realmConfig());
         int match = sUriMatcher.match(uri);
+        SQLiteDatabase sqlDB = database.getWritableDatabase();
 
         int taskDelete = 0;
         switch (match) {
+            case FAV:
+                taskDelete = sqlDB.delete(DBHelper.TABLE_MOVIE, selection, selectionArgs);
+                break;
             case FAV_ID:
-                final int id = Integer.parseInt(uri.getPathSegments().get(1));
-
-                realm.beginTransaction();
-
-                Movies query = realm.where(Movies.class).equalTo("id", id).findFirst();
-                if (RealmObject.isValid(query)) {
-                    Log.d("DELETE", "movies to delete = "+query.getTitle());
-                    RealmObject.deleteFromRealm(query);
-                    taskDelete = 1;
-                    getContext().getContentResolver().notifyChange(uri, null);
-                }else {
-                    Log.d("DELETE", "unsuccessful");
+                String id = uri.getLastPathSegment();
+                if(TextUtils.isEmpty(selection)) {
+                    taskDelete = sqlDB.delete(DBHelper.TABLE_MOVIE, DBHelper.ID + "=" + id, null);
+                } else {
+                    taskDelete = sqlDB.delete(DBHelper.TABLE_MOVIE, DBHelper.ID + "=" + id + " and " + selection, selectionArgs);
                 }
-
-                realm.commitTransaction();
-
-                realm.close();
-
-
+                break;
         }
+        getContext().getContentResolver().notifyChange(uri, null);
         return taskDelete;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
         return 0;
+    }
+
+    private void checkColumns(String[] projection) {
+        String[] available = {
+                DBHelper.ID,
+                DBHelper.VOTE_AVERAGE,
+                DBHelper.VIDEO,
+                DBHelper.VOTE_AVERAGE,
+                DBHelper.TITLE,
+                DBHelper.POPULARITY,
+                DBHelper.POSTER_PATH,
+                DBHelper.ORIGINAL_LANGUAGE,
+                DBHelper.ORIGINAL_TITLE,
+                DBHelper.GENRE_IDS,
+                DBHelper.BACKDROP_PATH,
+                DBHelper.ADULT,
+                DBHelper.OVERVIEW,
+                DBHelper.RELEASE_DATE
+        };
+        if (projection != null) {
+            HashSet<String> requestedColumns = new HashSet<String>(
+                    Arrays.asList(projection));
+            HashSet<String> availableColumns = new HashSet<String>(
+                    Arrays.asList(available));
+            // check if all columns which are requested are available
+            if (!availableColumns.containsAll(requestedColumns)) {
+                throw new IllegalArgumentException(
+                        "Unknown columns in projection");
+            }
+        }
     }
 }

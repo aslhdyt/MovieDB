@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Arrays;
 import java.util.List;
 
 import me.assel.moviedb.DetailsActivity;
@@ -50,7 +51,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         holder.poster.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("click", "Result title = "+ result.getTitle());
+                Log.d("Movies", "title = "+ result.getTitle());
                 Intent i = new Intent(mContext, DetailsActivity.class);
                 i.putExtra("result", result);
                 mContext.startActivity(i);

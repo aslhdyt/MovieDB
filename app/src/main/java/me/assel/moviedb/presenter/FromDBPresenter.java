@@ -12,12 +12,29 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import java.lang.reflect.Array;
+import java.net.IDN;
 import java.util.ArrayList;
 import java.util.List;
 
 import me.assel.moviedb.contentProvider.Contract;
 import me.assel.moviedb.model.Movies;
 import me.assel.moviedb.presenter.adapter.MovieAdapter;
+
+import static me.assel.moviedb.contentProvider.DBHelper.ADULT;
+import static me.assel.moviedb.contentProvider.DBHelper.BACKDROP_PATH;
+import static me.assel.moviedb.contentProvider.DBHelper.GENRE_IDS;
+import static me.assel.moviedb.contentProvider.DBHelper.ID;
+import static me.assel.moviedb.contentProvider.DBHelper.ORIGINAL_LANGUAGE;
+import static me.assel.moviedb.contentProvider.DBHelper.ORIGINAL_TITLE;
+import static me.assel.moviedb.contentProvider.DBHelper.OVERVIEW;
+import static me.assel.moviedb.contentProvider.DBHelper.POPULARITY;
+import static me.assel.moviedb.contentProvider.DBHelper.POSTER_PATH;
+import static me.assel.moviedb.contentProvider.DBHelper.RELEASE_DATE;
+import static me.assel.moviedb.contentProvider.DBHelper.TITLE;
+import static me.assel.moviedb.contentProvider.DBHelper.VIDEO;
+import static me.assel.moviedb.contentProvider.DBHelper.VOTE_AVERAGE;
+import static me.assel.moviedb.contentProvider.DBHelper.VOTE_COUNT;
 
 /**
  * Created by assel on 5/28/17.
@@ -103,20 +120,21 @@ public class FromDBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
             do {
                 //reconvert from cursor to Movies object
                 Movies movies = new Movies();
-                movies.setId(data.getInt(data.getColumnIndex("id")));
-                movies.setVoteCount(data.getInt(data.getColumnIndex("vote_count")));
-                movies.setVideo(data.getString(data.getColumnIndex("video")).equals("true"));
-                movies.setVoteAverage(data.getFloat(data.getColumnIndex("vote_average")));
-                movies.setTitle(data.getString(data.getColumnIndex("title")));
-                movies.setPopularity(data.getFloat(data.getColumnIndex("popularity")));
-                movies.setPosterPath(data.getString(data.getColumnIndex("poster_path")));
-                movies.setOriginalLanguage(data.getString(data.getColumnIndex("original_language")));
-                movies.setOriginalTitle(data.getString(data.getColumnIndex("original_title")));
-//                movies.setGenreIds(data)
-                movies.setBackdropPath(data.getString(data.getColumnIndex("backdrop_path")));
-                movies.setAdult(data.getString(data.getColumnIndex("adult")).equals("true"));
-                movies.setOverview(data.getString(data.getColumnIndex("overview")));
-                movies.setReleaseDate(data.getString(data.getColumnIndex("release_date")));
+                movies.setId(data.getInt(data.getColumnIndex(ID)));
+                movies.setVoteCount(data.getInt(data.getColumnIndex(VOTE_COUNT)));
+                movies.setVideo(data.getString(data.getColumnIndex(VIDEO)).equals("true"));
+                movies.setVoteAverage(data.getFloat(data.getColumnIndex(VOTE_AVERAGE)));
+                movies.setTitle(data.getString(data.getColumnIndex(TITLE)));
+                movies.setPopularity(data.getFloat(data.getColumnIndex(POPULARITY)));
+                movies.setPosterPath(data.getString(data.getColumnIndex(POSTER_PATH)));
+                movies.setOriginalLanguage(data.getString(data.getColumnIndex(ORIGINAL_LANGUAGE)));
+                movies.setOriginalTitle(data.getString(data.getColumnIndex(ORIGINAL_TITLE)));
+                String CSV = data.getString(data.getColumnIndex(GENRE_IDS));
+                movies.setGenreIds(toIntArray(CSV));
+                movies.setBackdropPath(data.getString(data.getColumnIndex(BACKDROP_PATH)));
+                movies.setAdult(data.getString(data.getColumnIndex(ADULT)).equals("true"));
+                movies.setOverview(data.getString(data.getColumnIndex(OVERVIEW)));
+                movies.setReleaseDate(data.getString(data.getColumnIndex(RELEASE_DATE)));
 
                 moviesList.add(movies);
             } while (data.moveToNext());
@@ -124,6 +142,17 @@ public class FromDBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
         adapter = new MovieAdapter(mActivity, moviesList);
         recyclerView.setAdapter(adapter);
         swipeRefresh.setRefreshing(false);
+    }
+
+    private int[] toIntArray(String csv) {
+        String[] strArr = csv.split(",");
+        int[] intArr = new int[strArr.length];
+        int i = 0;
+        for (String s : strArr) {
+            intArr[i] = Integer.parseInt(s);
+            i++;
+        }
+        return intArr;
     }
 
 
