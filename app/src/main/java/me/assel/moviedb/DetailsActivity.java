@@ -1,10 +1,13 @@
 package me.assel.moviedb;
 
 import android.content.ContentValues;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,7 +44,8 @@ import static me.assel.moviedb.AppConfig.IMG_BASE_URL;
 public class DetailsActivity extends AppCompatActivity {
     @BindView(R.id.imageView_poster) ImageView poster;
     @BindView(R.id.imageView_like) ImageView like;
-    @BindView(R.id.collapsing_toolbar) CollapsingToolbarLayout title;
+    CollapsingToolbarLayout title_colaps;
+    TextView title_txt;
     @BindView(R.id.textView_release) TextView release;
     @BindView(R.id.textView_overView) TextView overView;
     @BindView(R.id.textView_star) TextView star;
@@ -65,8 +69,15 @@ public class DetailsActivity extends AppCompatActivity {
         if(movie == null) return;
 
         Picasso.with(this).load(IMG_BASE_URL+ movie.getPosterPath()).placeholder(R.drawable.video).into(poster);
-        title.setTitle(movie.getTitle());
-        title.setExpandedTitleColor(getResources().getColor(android.R.color.transparent));
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            title_colaps = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+            title_colaps.setTitle(movie.getTitle());
+            title_colaps.setExpandedTitleColor(ContextCompat.getColor(this, android.R.color.transparent));
+        } else {
+            title_txt = (TextView)findViewById(R.id.textView_title);
+            title_txt.setText(movie.getTitle());
+        }
+
         release.setText(movie.getReleaseDate());
         overView.setText(movie.getOverview());
         star.setText(String.valueOf(movie.getVoteAverage()));
@@ -108,7 +119,7 @@ public class DetailsActivity extends AppCompatActivity {
 
         call.enqueue(new Callback<Videos>() {
             @Override
-            public void onResponse(Call<Videos> call, Response<Videos> response) {
+            public void onResponse(@NonNull Call<Videos> call, @NonNull Response<Videos> response) {
                 List<Videos.Result> result = response.body().getResults();
                 videos = result;
 
@@ -122,7 +133,7 @@ public class DetailsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Videos> call, Throwable t) {
+            public void onFailure(@NonNull Call<Videos> call, @NonNull Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -130,7 +141,7 @@ public class DetailsActivity extends AppCompatActivity {
         Call<Reviews> call1 = request.getReviews(movie.getId(), API_KEY);
         call1.enqueue(new Callback<Reviews>() {
             @Override
-            public void onResponse(Call<Reviews> call, Response<Reviews> response) {
+            public void onResponse(@NonNull Call<Reviews> call, @NonNull Response<Reviews> response) {
                 List<Reviews.Result> result = response.body().getResults();
                 reviews = result;
 
@@ -146,7 +157,7 @@ public class DetailsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Reviews> call, Throwable t) {
+            public void onFailure(@NonNull Call<Reviews> call, @NonNull Throwable t) {
 
             }
         });

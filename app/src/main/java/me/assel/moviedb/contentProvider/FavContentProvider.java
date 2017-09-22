@@ -2,25 +2,17 @@ package me.assel.moviedb.contentProvider;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
-import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.util.Arrays;
 import java.util.HashSet;
-
-import me.assel.moviedb.model.Movies;
 
 import static me.assel.moviedb.contentProvider.Contract.PATH_FAV;
 
@@ -30,7 +22,7 @@ import static me.assel.moviedb.contentProvider.Contract.PATH_FAV;
  */
 
 public class FavContentProvider extends ContentProvider {
-    private DBHelper database;
+    private DBHelper dbHelper;
 
     public static final int FAV = 100;
     public static final int FAV_ID = 101;
@@ -50,7 +42,7 @@ public class FavContentProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        database = new DBHelper(getContext());
+        dbHelper = new DBHelper(getContext());
         return false;
     }
 
@@ -58,12 +50,6 @@ public class FavContentProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         int match = sUriMatcher.match(uri);
-        // TODO: 6/23/17 find solution for Realm to Cursor 
-//        MatrixCursor retCursor = null;
-        //because realm doesnt support convert to Cursor object, i need to make custom Cursor column
-//        String[] column = {"id", "vote_count", "video", "vote_average", "title", "popularity",
-//                "poster_path", "original_language", "original_title", "genre_ids", "backdrop_path",
-//                "adult", "overview", "release_date"};
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         checkColumns(projection);
 
@@ -76,7 +62,7 @@ public class FavContentProvider extends ContentProvider {
                     + "=" + uri.getLastPathSegment());
                 break;
         }
-        SQLiteDatabase db = database.getWritableDatabase();
+        SQLiteDatabase db = this.dbHelper.getWritableDatabase();
         Cursor retCursor = queryBuilder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
         retCursor.setNotificationUri(getContext().getContentResolver(),uri);
 
@@ -93,7 +79,7 @@ public class FavContentProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         int match = sUriMatcher.match(uri);
-        SQLiteDatabase sqlDB = database.getWritableDatabase();
+        SQLiteDatabase sqlDB = dbHelper.getWritableDatabase();
         long id = 0;
         switch (match) {
             case FAV:
@@ -109,7 +95,7 @@ public class FavContentProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
         int match = sUriMatcher.match(uri);
-        SQLiteDatabase sqlDB = database.getWritableDatabase();
+        SQLiteDatabase sqlDB = dbHelper.getWritableDatabase();
 
         int taskDelete = 0;
         switch (match) {

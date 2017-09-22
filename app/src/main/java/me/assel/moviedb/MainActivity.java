@@ -104,18 +104,9 @@ public class MainActivity extends Activity {
         super.onSaveInstanceState(outState);
         moviePresenter1.saveInstance(outState);
         moviePresenter2.saveInstance(outState);
+        moviePresenter3.saveInstance(outState);
         outState.putInt("Tab",host.getCurrentTab());
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        Log.d("Activity", "return from requestCode = "+requestCode
-//            +"\nresultCode = "+resultCode);
-//        if(requestCode == 1) {
-//            refreshRealm();
-//        }
-//
-//    }
 
 }

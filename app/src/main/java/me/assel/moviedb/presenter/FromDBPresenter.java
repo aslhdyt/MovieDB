@@ -6,14 +6,13 @@ import android.content.AsyncTaskLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import java.lang.reflect.Array;
-import java.net.IDN;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,12 +42,11 @@ import static me.assel.moviedb.contentProvider.DBHelper.VOTE_COUNT;
 public class FromDBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
     private RecyclerView recyclerView;
     private GridLayoutManager mLayoutManager;
+    private Bundle saveInstance;
 
-    private MovieAdapter adapter;
+    private SwipeRefreshLayout swipeRefresh;
 
-    SwipeRefreshLayout swipeRefresh;
-
-    int TASK_LOADER_ID = 0;
+    private int TASK_LOADER_ID = 0;
     private Activity mActivity;
 
 
@@ -57,6 +55,7 @@ public class FromDBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
         recyclerView = mRecyclerView;
         mLayoutManager = new GridLayoutManager(mActivity, 2);
         swipeRefresh = refreshLayout;
+        saveInstance = savedInstanceState;
 
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -115,7 +114,7 @@ public class FromDBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        List<Movies> moviesList = new ArrayList<Movies>();
+        List<Movies> moviesArrayList = new ArrayList<>();
         if (data.moveToFirst()) {
             do {
                 //reconvert from cursor to Movies object
@@ -136,12 +135,15 @@ public class FromDBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
                 movies.setOverview(data.getString(data.getColumnIndex(OVERVIEW)));
                 movies.setReleaseDate(data.getString(data.getColumnIndex(RELEASE_DATE)));
 
-                moviesList.add(movies);
+                moviesArrayList.add(movies);
             } while (data.moveToNext());
         }
-        adapter = new MovieAdapter(mActivity, moviesList);
+        MovieAdapter adapter = new MovieAdapter(mActivity, moviesArrayList);
         recyclerView.setAdapter(adapter);
         swipeRefresh.setRefreshing(false);
+        if (saveInstance != null) {
+            mLayoutManager.onRestoreInstanceState(saveInstance.getParcelable("layoutManager"));
+        }
     }
 
     private int[] toIntArray(String csv) {
@@ -163,5 +165,10 @@ public class FromDBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public void onResume(Activity activity) {
         activity.getLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
+    }
+
+    public void saveInstance(Bundle outState) {
+        outState.putParcelable("layoutManager", mLayoutManager.onSaveInstanceState());
+
     }
 }

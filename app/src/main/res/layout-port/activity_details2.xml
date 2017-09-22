@@ -16,16 +16,15 @@
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginStart="48dp"
-            app:expandedTitleMarginEnd="64dp"
+            app:collapsedTitleGravity="start"
+            app:contentScrim="@color/colorPrimaryDark"
             android:fitsSystemWindows="true">
             <ImageView
                 android:id="@+id/imageView_poster"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:background="@color/colorGrey"
                 android:scaleType="fitCenter"
@@ -38,7 +37,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:layout_collapseMode="pin" />
+                app:layout_collapseMode="pin"
+                android:elevation="8dp"/>
             </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
@@ -52,35 +52,36 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:id="@+id/panel">
 
             <TextView
                 android:id="@+id/textView_release"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 android:gravity="center_vertical"
                 android:text="TextView"
                 android:textStyle="italic"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="@+id/textView_overView"
+                app:layout_constraintHorizontal_bias="1" />
 
             <ImageView
                 android:id="@+id/imageView_star"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="parent"
-                app:srcCompat="@drawable/star" />
+                app:srcCompat="@drawable/star"
+                android:layout_marginTop="0dp"
+                app:layout_constraintTop_toBottomOf="@+id/textView_release"
+                app:layout_constraintRight_toRightOf="parent" />
 
             <View
                 android:id="@+id/view"
                 android:layout_width="0dp"
-                android:layout_height="5dp"
+                android:layout_height="8dp"
                 android:layout_marginTop="8dp"
                 android:background="@color/colorGreyLight"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -93,14 +94,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginLeft="5dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:text="TextView"
                 android:textSize="16sp"
                 app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_marginRight="8dp"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_release" />
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintTop_toTopOf="@+id/view"
+                android:layout_marginTop="8dp" />
 
             <TextView
                 android:id="@+id/textView_star"
@@ -123,8 +126,9 @@
                 android:longClickable="false"
                 android:onClick="like"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="parent"
-                app:srcCompat="@drawable/unlike" />
+                app:layout_constraintTop_toTopOf="@+id/panel"
+                app:srcCompat="@drawable/unlike"
+                android:layout_marginLeft="8dp" />
 
             <TextView
                 android:id="@+id/textView_like"
@@ -145,7 +149,8 @@
                 android:background="@color/colorAccentDark"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_overView">
+                app:layout_constraintTop_toBottomOf="@+id/textView_overView"
+                android:layout_marginTop="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
