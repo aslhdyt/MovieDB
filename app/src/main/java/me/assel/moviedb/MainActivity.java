@@ -53,22 +53,19 @@ public class MainActivity extends AppCompatActivity {
             host.setCurrentTab(savedInstanceState.getInt("Tab"));
         }
 
-        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                //check on which tab;
-                switch (host.getCurrentTab()) {
-                    case 0:
-                        moviePresenter1.loadData();
-                        break;
-                    case 1:
-                        moviePresenter2.loadData();
-                        break;
-                    case 2:
-                        moviePresenter3.loadData();
-                        break;
-                }
+        refreshLayout = findViewById(R.id.swipe_refresh_layout);
+        refreshLayout.setOnRefreshListener(() -> {
+            //check on which tab;
+            switch (host.getCurrentTab()) {
+                case 0:
+                    moviePresenter1.loadData();
+                    break;
+                case 1:
+                    moviePresenter2.loadData();
+                    break;
+                case 2:
+                    moviePresenter3.loadData();
+                    break;
             }
         });
 
