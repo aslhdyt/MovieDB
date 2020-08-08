@@ -3,12 +3,13 @@ package me.assel.moviedb.datasource.model
 import android.app.Activity
 import android.content.Context
 import androidx.fragment.app.Fragment
+import com.google.gson.Gson
 import kotlinx.coroutines.CancellationException
 import me.assel.moviedb.R
+import me.assel.moviedb.datasource.network.model.response.ErrorResponse
 import me.assel.moviedb.utils.showSnackBar
 import me.assel.moviedb.utils.showToast
-import okhttp3.Response
-import okhttp3.ResponseBody
+import retrofit2.Response
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
@@ -19,7 +20,7 @@ sealed class NetworkState<out T> {
     sealed class Failed : NetworkState<Nothing>() {
         class ByException(val t: Throwable) : Failed()
         class ByErrorMessage(val msg: String) : Failed()
-        class ByResponse(val response: ResponseBody?, val code : Int = 0): Failed()
+        class ByResponse(val response: ErrorResponse?, val httpCode : Int = 0): Failed()
         object ByTimeout : Failed()
         object NoConnection: Failed()
     }
@@ -39,7 +40,7 @@ suspend fun <T> parseNetworkState(retrofitCall: (suspend () -> retrofit2.Respons
             if (response.errorBody()?.toString()?.contains("gateway time-out error") == true)
                 NetworkState.Failed.ByTimeout
             else {
-                val converterError = response.errorBody()
+                val converterError = response.getErrorResponse()
                 NetworkState.Failed.ByResponse(converterError, response.code())
             }
         }
@@ -53,11 +54,24 @@ suspend fun <T> parseNetworkState(retrofitCall: (suspend () -> retrofit2.Respons
 }
 
 
+fun Response<*>.getErrorResponse(): ErrorResponse {
+    val json = this.errorBody()?.string()
+    return try {
+        Gson().fromJson<ErrorResponse>(json, ErrorResponse::class.java)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        ErrorResponse(
+                statusCode = code(),
+                statusMessage = "${code()} ${message()}",
+                success = false
+        )
+    }
+}
 //Extensions error receiver
-fun Fragment.handleErrorState(state: NetworkState<*>, retry: (() -> Unit)? = null, onErrorResponse: ((msg: ResponseBody?) -> Unit)? = null) { if (state is NetworkState.Failed) activity?.handleErrorState(state, retry, onErrorResponse) }
-fun Context.handleErrorState(state: NetworkState<*>, retry: (() -> Unit)? = null, onErrorResponse: ((msg: ResponseBody?) -> Unit)? = null) { if (state is NetworkState.Failed) handleErrorState(state, retry, onErrorResponse)}
-fun Fragment.handleErrorState(state: NetworkState.Failed, retry: (() -> Unit)? = null, onErrorResponse: ((msg: ResponseBody?) -> Unit)? = null) = activity?.handleErrorState(state, retry, onErrorResponse)
-fun Context.handleErrorState(state: NetworkState.Failed, retry: (() -> Unit)? = null, onErrorResponse: ((msg: ResponseBody?) -> Unit)? = null) {
+fun Fragment.handleErrorState(state: NetworkState<*>, retry: (() -> Unit)? = null, onErrorResponse: ((msg: ErrorResponse?) -> Unit)? = null) { if (state is NetworkState.Failed) activity?.handleErrorState(state, retry, onErrorResponse) }
+fun Context.handleErrorState(state: NetworkState<*>, retry: (() -> Unit)? = null, onErrorResponse: ((msg: ErrorResponse?) -> Unit)? = null) { if (state is NetworkState.Failed) handleErrorState(state, retry, onErrorResponse)}
+fun Fragment.handleErrorState(state: NetworkState.Failed, retry: (() -> Unit)? = null, onErrorResponse: ((msg: ErrorResponse?) -> Unit)? = null) = activity?.handleErrorState(state, retry, onErrorResponse)
+fun Context.handleErrorState(state: NetworkState.Failed, retry: (() -> Unit)? = null, onErrorResponse: ((msg: ErrorResponse?) -> Unit)? = null) {
     //extension function
     when (state) {
         is NetworkState.Failed.ByException -> {
@@ -79,7 +93,7 @@ fun Context.handleErrorState(state: NetworkState.Failed, retry: (() -> Unit)? = 
             } else {
                 //if not manually handled, run default function below
                 when {
-                    state.code > 500 -> showMessage(getString(R.string.something_went_wrong))
+                    state.httpCode > 500 -> showMessage(getString(R.string.something_went_wrong))
                     else -> showMessage("${state.response}")
                 }
 

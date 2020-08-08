@@ -12,4 +12,8 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     val genreList = NetworkLiveData(viewModelScope) {
         network.getGenreList()
     }
+
+    fun getMoviesByGenreIds(genreId: Int) = NetworkLiveData(viewModelScope) {
+        network.discoverMovieByGenre(genreId)
+    }
 }
