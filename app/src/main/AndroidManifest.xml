@@ -18,7 +18,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="me.assel.moviedb.DetailsActivity"/>
 
         <provider
             android:authorities="me.assel.moviedb.contentProvider"

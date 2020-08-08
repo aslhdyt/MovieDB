@@ -20,6 +20,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
+import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -27,6 +28,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.snackbar.Snackbar
 import me.assel.moviedb.BuildConfig
 import me.assel.moviedb.R
+import kotlin.reflect.KClass
 
 fun Fragment.showToast(resString: Int) = context?.showToast(resString)
 fun Context.showToast(resString: Int) = showToast(getString(resString))
