@@ -25,7 +25,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import me.assel.moviedb.api.RequestInterface;
+import me.assel.moviedb.api.Endpoint;
 import me.assel.moviedb.contentProvider.Contract;
 import me.assel.moviedb.contentProvider.DBHelper;
 import me.assel.moviedb.model.Movies;
@@ -116,7 +116,7 @@ public class DetailsActivity extends AppCompatActivity {
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        RequestInterface request = retrofit.create(RequestInterface.class);
+        Endpoint request = retrofit.create(Endpoint.class);
         Call<Videos> call = request.getVideos(movie.getId(), API_KEY);
 
         call.enqueue(new Callback<Videos>() {

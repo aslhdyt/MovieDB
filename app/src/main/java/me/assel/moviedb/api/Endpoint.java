@@ -12,7 +12,7 @@ import retrofit2.http.Query;
  * Created by assel on 5/23/17.
  */
 
-public interface RequestInterface {
+public interface Endpoint {
 
     @GET("movie/popular")
     Call<Page> getPopular(

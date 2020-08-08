@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.assel.moviedb.R;
-import me.assel.moviedb.api.RequestInterface;
+import me.assel.moviedb.api.Endpoint;
 import me.assel.moviedb.api.utils.EndlessRecyclerViewScrollListener;
 import me.assel.moviedb.model.Movies;
 import me.assel.moviedb.model.Page;
@@ -40,7 +40,7 @@ public class FromApiPresenter {
     private RecyclerView recyclerView;
     private GridLayoutManager mLayoutManager;
 
-    private RequestInterface request;
+    private Endpoint request;
 
     private List<Movies> allResult = new ArrayList<>();
     private MovieAdapter adapter;
@@ -85,7 +85,7 @@ public class FromApiPresenter {
     public void loadData() {
         swipeRefresh.setRefreshing(true);
         Retrofit retrofit = retrofitBuilder();
-        request = retrofit.create(RequestInterface.class);
+        request = retrofit.create(Endpoint.class);
 
         if(savedInstanceState == null) {
             Call<Page> item;
