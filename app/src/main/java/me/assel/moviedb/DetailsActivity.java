@@ -19,13 +19,12 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import me.assel.moviedb.api.Endpoint;
+import me.assel.moviedb.datasource.network.Endpoint;
 import me.assel.moviedb.contentProvider.Contract;
 import me.assel.moviedb.contentProvider.DBHelper;
 import me.assel.moviedb.model.Movies;
@@ -70,7 +69,7 @@ public class DetailsActivity extends AppCompatActivity {
         movie = getIntent().getExtras().getParcelable("result");
         if(movie == null) return;
 
-        Picasso.with(this).load(IMG_BASE_URL+ movie.getPosterPath()).placeholder(R.drawable.video).into(poster);
+//        Picasso.with(this).load(IMG_BASE_URL+ movie.getPosterPath()).placeholder(R.drawable.video).into(poster);
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             title_colaps = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
             title_colaps.setTitle(movie.getTitle());
@@ -117,52 +116,52 @@ public class DetailsActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         Endpoint request = retrofit.create(Endpoint.class);
-        Call<Videos> call = request.getVideos(movie.getId(), API_KEY);
+//        Call<Videos> call = request.getVideos(movie.getId(), API_KEY);
+//
+//        call.enqueue(new Callback<Videos>() {
+//            @Override
+//            public void onResponse(@NonNull Call<Videos> call, @NonNull Response<Videos> response) {
+//                List<Videos.Result> result = response.body().getResults();
+//                videos = result;
+//
+//                VideoAdapter adapter = new VideoAdapter(getBaseContext(), result);
+//
+//                RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerView_trailer);
+//                LinearLayoutManager manager = new LinearLayoutManager(getBaseContext());
+//                manager.setAutoMeasureEnabled(true);
+//                recyclerView.setLayoutManager(manager);
+//                recyclerView.setAdapter(adapter);
+//            }
+//
+//            @Override
+//            public void onFailure(@NonNull Call<Videos> call, @NonNull Throwable t) {
+//                t.printStackTrace();
+//            }
+//        });
 
-        call.enqueue(new Callback<Videos>() {
-            @Override
-            public void onResponse(@NonNull Call<Videos> call, @NonNull Response<Videos> response) {
-                List<Videos.Result> result = response.body().getResults();
-                videos = result;
-
-                VideoAdapter adapter = new VideoAdapter(getBaseContext(), result);
-
-                RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerView_trailer);
-                LinearLayoutManager manager = new LinearLayoutManager(getBaseContext());
-                manager.setAutoMeasureEnabled(true);
-                recyclerView.setLayoutManager(manager);
-                recyclerView.setAdapter(adapter);
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Videos> call, @NonNull Throwable t) {
-                t.printStackTrace();
-            }
-        });
-
-        Call<Reviews> call1 = request.getReviews(movie.getId(), API_KEY);
-        call1.enqueue(new Callback<Reviews>() {
-            @Override
-            public void onResponse(@NonNull Call<Reviews> call, @NonNull Response<Reviews> response) {
-                List<Reviews.Result> result = response.body().getResults();
-                reviews = result;
-
-                Log.d("review", response.toString());
-                ReviewAdapter adapter = new ReviewAdapter(getBaseContext(), result);
-
-                RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerView_review);
-                LinearLayoutManager manager = new LinearLayoutManager(getBaseContext());
-                manager.setAutoMeasureEnabled(true);
-                recyclerView.setLayoutManager(manager);
-                recyclerView.setAdapter(adapter);
-
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<Reviews> call, @NonNull Throwable t) {
-
-            }
-        });
+//        Call<Reviews> call1 = request.getReviews(movie.getId(), API_KEY);
+//        call1.enqueue(new Callback<Reviews>() {
+//            @Override
+//            public void onResponse(@NonNull Call<Reviews> call, @NonNull Response<Reviews> response) {
+//                List<Reviews.Result> result = response.body().getResults();
+//                reviews = result;
+//
+//                Log.d("review", response.toString());
+//                ReviewAdapter adapter = new ReviewAdapter(getBaseContext(), result);
+//
+//                RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerView_review);
+//                LinearLayoutManager manager = new LinearLayoutManager(getBaseContext());
+//                manager.setAutoMeasureEnabled(true);
+//                recyclerView.setLayoutManager(manager);
+//                recyclerView.setAdapter(adapter);
+//
+//            }
+//
+//            @Override
+//            public void onFailure(@NonNull Call<Reviews> call, @NonNull Throwable t) {
+//
+//            }
+//        });
 
         ImageView like = (ImageView)findViewById(R.id.imageView_like);
         like.setTag(R.drawable.unlike);

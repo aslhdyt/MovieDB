@@ -13,11 +13,4 @@ public class AppConfig {
     public static final String API_KEY = BuildConfig.THE_MOVIE_DB_API_TOKEN;
     public static final String BASE_URL = "https://api.themoviedb.org/3/";
     public static final String IMG_BASE_URL = "https://image.tmdb.org/t/p/w780";
-
-    public static Retrofit retrofitBuilder() {
-        return new Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(new Gson()))
-            .build();
-    }
 }
