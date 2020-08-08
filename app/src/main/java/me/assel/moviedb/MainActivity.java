@@ -1,16 +1,19 @@
 package me.assel.moviedb;
 
-import android.app.Activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
+
 import android.widget.TabHost;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 
 import me.assel.moviedb.presenter.FromApiPresenter;
 import me.assel.moviedb.presenter.FromDBPresenter;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
     private FromApiPresenter moviePresenter1, moviePresenter2;
     private FromDBPresenter moviePresenter3;
     private SwipeRefreshLayout refreshLayout;

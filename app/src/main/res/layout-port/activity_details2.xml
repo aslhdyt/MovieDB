@@ -43,14 +43,14 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView_details"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/panel">
@@ -180,7 +180,7 @@
                 </LinearLayout>
             </TabHost>
 
-        </android.support.constraint.ConstraintLayout>
-    </android.support.v4.widget.NestedScrollView>
+        </androidx.constraintlayout.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

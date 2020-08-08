@@ -1,17 +1,17 @@
 package me.assel.moviedb.presenter;
 
-import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,10 +47,10 @@ public class FromDBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
     private SwipeRefreshLayout swipeRefresh;
 
     private int TASK_LOADER_ID = 0;
-    private Activity mActivity;
+    private AppCompatActivity mActivity;
 
 
-    public FromDBPresenter(Activity activity, RecyclerView mRecyclerView, Bundle savedInstanceState, SwipeRefreshLayout refreshLayout) {
+    public FromDBPresenter(AppCompatActivity activity, RecyclerView mRecyclerView, Bundle savedInstanceState, SwipeRefreshLayout refreshLayout) {
         mActivity = activity;
         recyclerView = mRecyclerView;
         mLayoutManager = new GridLayoutManager(mActivity, 2);
@@ -163,7 +163,7 @@ public class FromDBPresenter implements LoaderManager.LoaderCallbacks<Cursor> {
         recyclerView.setAdapter(null);
     }
 
-    public void onResume(Activity activity) {
+    public void onResume(AppCompatActivity activity) {
         activity.getLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
     }
 
