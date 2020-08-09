@@ -11,6 +11,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     val genreList = NetworkLiveData(viewModelScope) {
         network.getGenreList()
-    }
+    }.distinctSuccess(true)
 
 }

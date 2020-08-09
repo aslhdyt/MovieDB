@@ -10,5 +10,14 @@
         android:id="@+id/genreFragment"
         android:name="me.assel.moviedb.ui.genre.GenreTabFragment"
         android:label="fragment_genre"
-        tools:layout="@layout/fragment_genre_tab" />
+        tools:layout="@layout/fragment_genre_tab" >
+        <action
+            android:id="@+id/action_genreFragment_to_movieDetailFragment"
+            app:destination="@id/movieDetailFragment" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_movie_detail"
+        android:id="@+id/movieDetailFragment"
+        android:name="me.assel.moviedb.ui.genre.movie.detail.MovieDetailFragment"
+        android:label="MovieDetailFragment" />
 </navigation>

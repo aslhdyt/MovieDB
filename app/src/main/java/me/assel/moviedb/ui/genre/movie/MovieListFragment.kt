@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.*
+import androidx.navigation.findNavController
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
@@ -21,6 +22,7 @@ import me.assel.moviedb.databinding.ViewHolderMovieBinding
 import me.assel.moviedb.datasource.model.NetworkState
 import me.assel.moviedb.datasource.model.handleErrorState
 import me.assel.moviedb.datasource.network.model.response.DiscoverMovieResponse
+import me.assel.moviedb.ui.genre.movie.detail.MovieDetailFragment
 import me.assel.moviedb.utils.*
 
 class MovieListFragment private constructor(): Fragment(R.layout.fragment_movie_list) {
@@ -41,7 +43,8 @@ class MovieListFragment private constructor(): Fragment(R.layout.fragment_movie_
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return super.onCreateView(inflater, container, savedInstanceState)?.apply {
             val adapter = MovieListAdapter {
-                showToast("TODO: ${it.originalTitle}")
+                val arg = MovieDetailFragment.arg(it.id)
+                findNavController().navigate(R.id.action_genreFragment_to_movieDetailFragment, arg)
             }
             val bind = FragmentMovieListBinding.bind(this)
 
@@ -71,7 +74,6 @@ class MovieListFragment private constructor(): Fragment(R.layout.fragment_movie_
         val dataSource = LivePagedListBuilder(
                 sourceFactory,
                 PagedList.Config.Builder()
-                        .setPageSize(20)
                         .setPrefetchDistance(10)
                         .build()
         ).build()
