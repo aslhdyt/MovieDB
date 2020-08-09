@@ -13,4 +13,6 @@ class GenreViewModel(application: Application): AndroidViewModel(application) {
         network.getGenreList()
     }.distinctSuccess(true)
 
+
+    var pagePosition: Int? = null
 }

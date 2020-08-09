@@ -12,16 +12,21 @@
         android:label="fragment_genre"
         tools:layout="@layout/fragment_genre_tab" >
         <action
+            android:id="@+id/action_genreFragment_to_movieDetailFragment"
+            app:destination="@id/movieDetailFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            android:id="@+id/action_genreFragment_to_movieDetailFragment"
-            app:destination="@id/movieDetailFragment" />
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_movie_detail"
         android:id="@+id/movieDetailFragment"
         android:name="me.assel.moviedb.ui.genre.movie.detail.MovieDetailFragment"
-        android:label="MovieDetailFragment" />
+        android:label="MovieDetailFragment" >
+        <action
+            android:id="@+id/action_movieDetailFragment_to_genreFragment"
+            app:destination="@id/genreFragment"
+            app:popUpTo="@id/genreFragment" />
+    </fragment>
 </navigation>

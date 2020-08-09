@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import me.assel.moviedb.R
 import me.assel.moviedb.databinding.FragmentGenreTabBinding
@@ -18,7 +19,6 @@ import me.assel.moviedb.ui.genre.movie.MovieListFragment
 
 class GenreTabFragment : Fragment(R.layout.fragment_genre_tab) {
     private val vm: GenreViewModel by viewModels()
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = super.onCreateView(inflater, container, savedInstanceState) ?: return null
@@ -35,8 +35,22 @@ class GenreTabFragment : Fragment(R.layout.fragment_genre_tab) {
                 if (it is NetworkState.Success) {
                     val result = it.result
                     adapter.list = result.genres
+
+                    val lastPos = vm.pagePosition
+                    if (lastPos != null) {
+                        viewPager.setCurrentItem(lastPos, false)
+                    }
                 } else handleErrorState(it)
             })
+
+            //saving state
+            viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    vm.pagePosition = position
+                }
+            })
+
         }
         return v
     }
