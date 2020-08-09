@@ -2,15 +2,15 @@ package me.assel.moviedb.ui.genre.movie
 
 import android.app.Application
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.*
-import androidx.navigation.findNavController
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.Observer
+import androidx.lifecycle.switchMap
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
@@ -18,7 +18,7 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import me.assel.moviedb.AppConfig.IMG_BASE_URL
+import me.assel.moviedb.BuildConfig
 import me.assel.moviedb.R
 import me.assel.moviedb.databinding.FragmentMovieListBinding
 import me.assel.moviedb.databinding.ViewHolderMovieBinding
@@ -26,7 +26,9 @@ import me.assel.moviedb.datasource.model.NetworkState
 import me.assel.moviedb.datasource.model.handleErrorState
 import me.assel.moviedb.datasource.network.model.response.DiscoverMovieResponse
 import me.assel.moviedb.ui.genre.movie.detail.MovieDetailFragment
-import me.assel.moviedb.utils.*
+import me.assel.moviedb.utils.inflate
+import me.assel.moviedb.utils.loadImage
+import me.assel.moviedb.utils.viewModelFactory
 
 class MovieListFragment: Fragment(R.layout.fragment_movie_list) {
     private val vm: ViewModel by viewModels {
@@ -106,7 +108,7 @@ class MovieListFragment: Fragment(R.layout.fragment_movie_list) {
             fun bind(data: DiscoverMovieResponse.Result?) = with(ViewHolderMovieBinding.bind(itemView)) {
                 if (data != null) {
                     root.setOnClickListener { onClick(data) }
-                    imageView.loadImage(IMG_BASE_URL+data.posterPath)
+                    imageView.loadImage(BuildConfig.IMG_BASE_URL+data.posterPath)
                     textView2.text = data.originalTitle
                 } else { // placeholdeer
                     root.setOnClickListener(null)

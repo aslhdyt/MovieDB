@@ -21,6 +21,8 @@ android {
     }
     buildTypes.each {
         it.buildConfigField 'String', 'THE_MOVIE_DB_API_TOKEN', MyTheMovieDBApiToken
+        it.buildConfigField 'String', 'BASE_URL', '"https://api.themoviedb.org/3/"'
+        it.buildConfigField 'String', 'IMG_BASE_URL', '"https://image.tmdb.org/t/p/w780"'
     }
     buildFeatures {
         viewBinding = true

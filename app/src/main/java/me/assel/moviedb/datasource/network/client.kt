@@ -1,7 +1,7 @@
 package me.assel.moviedb.datasource.network
 
 import com.google.gson.Gson
-import me.assel.moviedb.AppConfig
+import me.assel.moviedb.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -16,7 +16,7 @@ fun retrofitBuilder(): Retrofit {
             .addInterceptor(logger)
             .build()
     return Retrofit.Builder()
-            .baseUrl(AppConfig.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create(Gson()))
             .build()

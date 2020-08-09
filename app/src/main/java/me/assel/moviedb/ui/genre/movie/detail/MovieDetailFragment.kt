@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import me.assel.moviedb.AppConfig
+import me.assel.moviedb.BuildConfig
 import me.assel.moviedb.R
 import me.assel.moviedb.databinding.FragmentMovieDetailBinding
 import me.assel.moviedb.datasource.model.NetworkState
@@ -61,7 +61,7 @@ class MovieDetailFragment: Fragment(R.layout.fragment_movie_detail) {
                 if (it is NetworkState.Loading) { progressBar.show() } else { progressBar.hide() }
                 if (it is NetworkState.Success) {
                     val movie = it.result
-                    imageViewPoster.loadImage(AppConfig.IMG_BASE_URL+movie.posterPath)
+                    imageViewPoster.loadImage(BuildConfig.IMG_BASE_URL+movie.posterPath)
                     collapsingToolbar.title = movie.title
                     collapsingToolbar.setExpandedTitleColor(Color.TRANSPARENT)
                     tvRelease.text = movie.releaseDate
@@ -92,31 +92,7 @@ class MovieDetailFragment: Fragment(R.layout.fragment_movie_detail) {
                     //handled in pagedList
                 } else handleErrorState(it)
             })
-
-//
-//            val call1: Call<Reviews> = request.getReviews(movie.getId(), AppConfig.API_KEY)
-//            call1.enqueue(object : Callback<Reviews> {
-//                override fun onResponse(call: Call<Reviews>, response: Response<Reviews>) {
-//                    val result = response.body()!!.results
-//                    reviews = result
-//                    Log.d("review", response.toString())
-//                    val adapter = ReviewAdapter(getBaseContext(), result)
-//                    val recyclerView = findViewById<View>(R.id.recyclerView_review) as RecyclerView
-//                    val manager = LinearLayoutManager(getBaseContext())
-//                    manager.isAutoMeasureEnabled = true
-//                    recyclerView.layoutManager = manager
-//                    recyclerView.adapter = adapter
-//                }
-//
-//                override fun onFailure(call: Call<Reviews>, t: Throwable) {}
-//            })
-//
-//            val like = findViewById<View>(R.id.imageView_like) as ImageView
-//            like.tag = R.drawable.unlike
-
         return v
         }
-
     }
-
 }
