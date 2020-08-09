@@ -1,5 +1,6 @@
 package me.assel.moviedb.ui.genre.movie
 
+import android.app.Application
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +8,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
 import me.assel.moviedb.AppConfig.IMG_BASE_URL
 import me.assel.moviedb.R
@@ -15,14 +16,21 @@ import me.assel.moviedb.databinding.FragmentMovieListBinding
 import me.assel.moviedb.databinding.ViewHolderMovieBinding
 import me.assel.moviedb.datasource.model.NetworkState
 import me.assel.moviedb.datasource.model.handleErrorState
+import me.assel.moviedb.datasource.model.livedata.NetworkLiveData
+import me.assel.moviedb.datasource.network.getNetworkService
 import me.assel.moviedb.datasource.network.model.response.DiscoverMovieResponse
 import me.assel.moviedb.ui.MainViewModel
+import me.assel.moviedb.ui.genre.movie.MovieListFragment.ViewModel
 import me.assel.moviedb.utils.inflate
 import me.assel.moviedb.utils.loadImage
 import me.assel.moviedb.utils.showToast
+import me.assel.moviedb.utils.viewModelFactory
 
 class MovieListFragment private constructor(): Fragment(R.layout.fragment_movie_list) {
-    val vm: MainViewModel by viewModels({requireActivity()})
+    private val vm: ViewModel by viewModels {
+        val genreId = requireArguments().getInt(ARG_GENRE_ID)
+        viewModelFactory { ViewModel(requireActivity().application, genreId) }
+    }
 
     companion object {
         const val ARG_GENRE_ID = "arg-genre_id"
@@ -35,7 +43,6 @@ class MovieListFragment private constructor(): Fragment(R.layout.fragment_movie_
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return super.onCreateView(inflater, container, savedInstanceState)?.apply {
-            val id = requireArguments().getInt(ARG_GENRE_ID)
             val adapter = MovieListAdapter {
                 showToast("TODO: ${it.originalTitle}")
             }
@@ -43,7 +50,7 @@ class MovieListFragment private constructor(): Fragment(R.layout.fragment_movie_
 
             bind.recyclerView.adapter = adapter
 
-            vm.getMoviesByGenreIds(id).observe(viewLifecycleOwner, Observer {
+            vm.movies.observe(viewLifecycleOwner, Observer {
                 it ?: return@Observer
                 if (it is NetworkState.Loading) {} else {} //TODO loading
                 if (it is NetworkState.Success) {
@@ -53,6 +60,13 @@ class MovieListFragment private constructor(): Fragment(R.layout.fragment_movie_
         }
     }
 
+    internal class ViewModel(application: Application, genreId: Int): AndroidViewModel(application) {
+        private val network = getNetworkService()
+
+        val movies = NetworkLiveData(viewModelScope) {
+            network.discoverMovieByGenre(genreId)
+        }
+    }
 
     internal class MovieListAdapter(val onClick: (DiscoverMovieResponse.Result)->Unit): RecyclerView.Adapter<MovieListAdapter.ViewHolder>() {
         var list: List<DiscoverMovieResponse.Result> = emptyList()
@@ -80,7 +94,6 @@ class MovieListFragment private constructor(): Fragment(R.layout.fragment_movie_
             val data = list[position]
             holder.bind(data)
         }
-
     }
 
 }

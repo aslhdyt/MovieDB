@@ -23,7 +23,7 @@ class GenreTabFragment : Fragment(R.layout.fragment_genre_tab) {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return super.onCreateView(inflater, container, savedInstanceState)?.apply {
             val adapter = PageAdapter(this@GenreTabFragment)
-            FragmentGenreTabBinding.bind(this).run {
+            val bind = FragmentGenreTabBinding.bind(this).apply {
                 viewPager.adapter = adapter
                 TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                     val title = adapter.getTitle(position)
@@ -33,7 +33,7 @@ class GenreTabFragment : Fragment(R.layout.fragment_genre_tab) {
 
 
             vm.genreList.observe(viewLifecycleOwner, Observer {
-                if (it is NetworkState.Loading) {} else {} //TODO loading
+                if (it is NetworkState.Loading) bind.progressBar.show() else bind.progressBar.hide()
                 if (it is NetworkState.Success) {
                     val result = it.result
                     adapter.list = result.genres
@@ -41,6 +41,8 @@ class GenreTabFragment : Fragment(R.layout.fragment_genre_tab) {
             })
         }
     }
+
+
 
     inner class PageAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
         var list = emptyList<GenreListResponse.Genre>()
@@ -56,6 +58,5 @@ class GenreTabFragment : Fragment(R.layout.fragment_genre_tab) {
         }
 
         fun getTitle(position: Int) = list[position].name
-
     }
 }
