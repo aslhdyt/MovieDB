@@ -16,5 +16,9 @@ interface Endpoint {
 
 
     @GET("discover/movie")
-    suspend fun discoverMovieByGenre(@Query("with_genres") genreId: Int, @Query("api_key") apiKey: String = BuildConfig.THE_MOVIE_DB_API_TOKEN): Response<DiscoverMovieResponse>
+    suspend fun discoverMovieByGenre(
+            @Query("with_genres") genreId: Int,
+            @Query("page") page: Int,
+            @Query("api_key") apiKey: String = BuildConfig.THE_MOVIE_DB_API_TOKEN
+    ): Response<DiscoverMovieResponse>
 }
