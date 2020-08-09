@@ -62,7 +62,7 @@ fun Response<*>.getErrorResponse(): ErrorResponse {
         e.printStackTrace()
         ErrorResponse(
                 statusCode = code(),
-                statusMessage = "${code()} ${message()}",
+                statusMessage = message(),
                 success = false
         )
     }
@@ -78,6 +78,7 @@ fun Context.handleErrorState(state: NetworkState.Failed, retry: (() -> Unit)? = 
             val t = state.t
             t.printStackTrace()
             if (t is CancellationException) {
+
                 println("coroutines cancelled") //TODO find couroutine cancellation with message to show
             } else {
                 showMessage(t.message ?: getString(R.string.something_went_wrong))
@@ -92,10 +93,7 @@ fun Context.handleErrorState(state: NetworkState.Failed, retry: (() -> Unit)? = 
                 onErrorResponse(state.response)
             } else {
                 //if not manually handled, run default function below
-                when {
-                    state.httpCode > 500 -> showMessage(getString(R.string.something_went_wrong))
-                    else -> showMessage("${state.response}")
-                }
+                showMessage("error ${state.httpCode}: ${state.response?.statusMessage}")
 
             }
 
