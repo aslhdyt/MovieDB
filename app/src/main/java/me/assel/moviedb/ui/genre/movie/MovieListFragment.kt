@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.*
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import androidx.paging.PagedListAdapter
@@ -41,14 +42,13 @@ class MovieListFragment private constructor(): Fragment(R.layout.fragment_movie_
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)?.apply {
+        val v = super.onCreateView(inflater, container, savedInstanceState) ?: return null
+        FragmentMovieListBinding.bind(v).apply {
             val adapter = MovieListAdapter {
                 val arg = MovieDetailFragment.arg(it.id)
                 findNavController().navigate(R.id.action_genreFragment_to_movieDetailFragment, arg)
             }
-            val bind = FragmentMovieListBinding.bind(this)
-
-            bind.recyclerView.adapter = adapter
+            recyclerView.adapter = adapter
 
             vm.dataSource.observe(viewLifecycleOwner, Observer {
                 it ?: return@Observer
@@ -56,17 +56,18 @@ class MovieListFragment private constructor(): Fragment(R.layout.fragment_movie_
             })
             vm.initState.observe(viewLifecycleOwner, Observer {
                 it ?: return@Observer
-                if (it is NetworkState.Loading) bind.initProgress.show() else bind.initProgress.hide()
+                if (it is NetworkState.Loading) initProgress.show() else initProgress.hide()
                 //result handled in paging
                 handleErrorState(it)
             })
             vm.loadMoreState.observe(viewLifecycleOwner, Observer {
                 it ?: return@Observer
-                if (it is NetworkState.Loading) bind.loadMoreProgress.show() else bind.loadMoreProgress.hide()
+                if (it is NetworkState.Loading) loadMoreProgress.show() else loadMoreProgress.hide()
                 //result handled in paging
                 handleErrorState(it)
             })
         }
+        return v
     }
 
     internal class ViewModel(application: Application, genreId: Int): AndroidViewModel(application) {

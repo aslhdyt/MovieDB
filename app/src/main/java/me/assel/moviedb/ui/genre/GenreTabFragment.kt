@@ -18,28 +18,27 @@ import me.assel.moviedb.ui.MainViewModel
 import me.assel.moviedb.ui.genre.movie.MovieListFragment
 
 class GenreTabFragment : Fragment(R.layout.fragment_genre_tab) {
-    val vm: MainViewModel by viewModels({requireActivity()})
+    private val vm: MainViewModel by viewModels({requireActivity()})
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)?.apply {
+        val v = super.onCreateView(inflater, container, savedInstanceState) ?: return null
+        FragmentGenreTabBinding.bind(v).apply {
             val adapter = PageAdapter(this@GenreTabFragment)
-            val bind = FragmentGenreTabBinding.bind(this).apply {
                 viewPager.adapter = adapter
                 TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                     val title = adapter.getTitle(position)
                     tab.text = title
                 }.attach()
-            }
-
 
             vm.genreList.observe(viewLifecycleOwner, Observer {
-                if (it is NetworkState.Loading) bind.progressBar.show() else bind.progressBar.hide()
+                if (it is NetworkState.Loading) progressBar.show() else progressBar.hide()
                 if (it is NetworkState.Success) {
                     val result = it.result
                     adapter.list = result.genres
                 } else handleErrorState(it)
             })
         }
+        return v
     }
 
 
