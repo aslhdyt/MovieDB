@@ -9,11 +9,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import me.assel.moviedb.AppConfig.IMG_BASE_URL
 import me.assel.moviedb.R
 import me.assel.moviedb.databinding.FragmentMovieListBinding
+import me.assel.moviedb.databinding.ViewHolderMovieBinding
+import me.assel.moviedb.datasource.model.NetworkState
 import me.assel.moviedb.datasource.model.handleErrorState
 import me.assel.moviedb.datasource.network.model.response.DiscoverMovieResponse
 import me.assel.moviedb.ui.MainViewModel
+import me.assel.moviedb.utils.inflate
+import me.assel.moviedb.utils.loadImage
+import me.assel.moviedb.utils.showToast
 
 class MovieListFragment private constructor(): Fragment(R.layout.fragment_movie_list) {
     val vm: MainViewModel by viewModels({requireActivity()})
@@ -31,7 +37,7 @@ class MovieListFragment private constructor(): Fragment(R.layout.fragment_movie_
         return super.onCreateView(inflater, container, savedInstanceState)?.apply {
             val id = requireArguments().getInt(ARG_GENRE_ID)
             val adapter = MovieListAdapter {
-
+                showToast("TODO: ${it.originalTitle}")
             }
             val bind = FragmentMovieListBinding.bind(this)
 
@@ -39,8 +45,10 @@ class MovieListFragment private constructor(): Fragment(R.layout.fragment_movie_
 
             vm.getMoviesByGenreIds(id).observe(viewLifecycleOwner, Observer {
                 it ?: return@Observer
-                println("data: $it")
-                handleErrorState(it)
+                if (it is NetworkState.Loading) {} else {} //TODO loading
+                if (it is NetworkState.Success) {
+                    adapter.list = it.result.results
+                } else handleErrorState(it)
             })
         }
     }
@@ -53,9 +61,12 @@ class MovieListFragment private constructor(): Fragment(R.layout.fragment_movie_
                 notifyDataSetChanged()
             }
 
-        internal inner class ViewHolder(v: View): RecyclerView.ViewHolder(v) {
-            fun bind(data: DiscoverMovieResponse.Result) = with(itemView){
-                setOnClickListener { onClick(data) }
+        internal inner class ViewHolder(v: ViewGroup): RecyclerView.ViewHolder(
+                v.inflate(R.layout.view_holder_movie)) {
+            fun bind(data: DiscoverMovieResponse.Result) = with(ViewHolderMovieBinding.bind(itemView)) {
+                root.setOnClickListener { onClick(data) }
+                imageView.loadImage(IMG_BASE_URL+data.posterPath)
+                textView2.text = data.originalTitle
             }
         }
 

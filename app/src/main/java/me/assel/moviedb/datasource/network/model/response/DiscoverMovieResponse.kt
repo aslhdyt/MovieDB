@@ -25,7 +25,7 @@ data class DiscoverMovieResponse(
         val overview: String, // Go behind the scenes during One Directions sell out "Take Me Home" tour and experience life on the road.
         val popularity: Double, // 1.166982
         @SerializedName("poster_path")
-        val posterPath: Any?, // null
+        val posterPath: String?, // null
         @SerializedName("release_date")
         val releaseDate: String, // 2013-08-30
         val title: String, // One Direction: This Is Us
