@@ -29,7 +29,7 @@ data class MovieDetailResponse(
     val productionCountries: List<ProductionCountry>,
     @SerializedName("release_date")
     val releaseDate: String, // 2003-05-30
-    val revenue: Int, // 940335536
+    val revenue: Long, // 940335536
     val runtime: Int, // 100
     @SerializedName("spoken_languages")
     val spokenLanguages: List<SpokenLanguage>,
