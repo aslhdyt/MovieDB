@@ -79,7 +79,7 @@ fun Context.handleErrorState(state: NetworkState.Failed, retry: (() -> Unit)? = 
             t.printStackTrace()
             if (t is CancellationException) {
 
-                println("coroutines cancelled") //TODO find couroutine cancellation with message to show
+                println("coroutines cancelled") //usually canceled by lifecycle of the scope (ex: viewModelScope)
             } else {
                 showMessage(t.message ?: getString(R.string.something_went_wrong))
             }
@@ -112,7 +112,6 @@ fun Context.showMessage(message: String, indefinite: Boolean = false, cancelable
     if (this is Activity) {
         showSnackBar(message, indefinite, cancelable)
     } else {
-        //TODO handle indefinite & cancelable for toast
         showToast(message)
     }
 }

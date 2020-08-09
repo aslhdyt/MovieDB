@@ -41,6 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
+        android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -63,7 +64,7 @@
                 android:id="@+id/tvRelease"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
                 android:gravity="center_vertical"
                 android:textStyle="italic"
                 app:layout_constraintRight_toRightOf="parent"
@@ -85,7 +86,7 @@
                 android:id="@+id/tvOverview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:layout_weight="1"
                 android:textSize="16sp"
@@ -118,7 +119,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <TabWidget
@@ -129,17 +130,47 @@
                     <FrameLayout
                         android:id="@android:id/tabcontent"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content">
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/recyclerView_trailer"
+                        <FrameLayout
+                            android:id="@+id/lytVideos"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="wrap_content">
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/recyclerView_review"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvVideos"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:nestedScrollingEnabled="false" />
+
+                            <androidx.core.widget.ContentLoadingProgressBar
+                                android:id="@+id/pbVideos"
+                                style="?attr/progressBarStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:indeterminate="true" />
+                        </FrameLayout>
+
+                        <FrameLayout
+                            android:id="@+id/lytReviews"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvReviews"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:nestedScrollingEnabled="false" />
+
+                            <androidx.core.widget.ContentLoadingProgressBar
+                                android:id="@+id/pbReviews"
+                                style="?attr/progressBarStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:indeterminate="true" />
+                        </FrameLayout>
                     </FrameLayout>
                 </LinearLayout>
             </TabHost>
