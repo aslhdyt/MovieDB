@@ -154,13 +154,13 @@
 
                         <FrameLayout
                             android:id="@+id/lytReviews"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rvReviews"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
+                                android:layout_height="wrap_content"
                                 android:nestedScrollingEnabled="false" />
 
                             <androidx.core.widget.ContentLoadingProgressBar
@@ -168,7 +168,7 @@
                                 style="?attr/progressBarStyle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
+                                android:layout_gravity="bottom"
                                 android:indeterminate="true" />
                         </FrameLayout>
                     </FrameLayout>

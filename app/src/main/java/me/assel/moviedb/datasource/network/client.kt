@@ -21,4 +21,5 @@ fun retrofitBuilder(): Retrofit {
             .addConverterFactory(GsonConverterFactory.create(Gson()))
             .build()
 }
-fun getNetworkService() = retrofitBuilder().create(Endpoint::class.java)
+private val endpoint by lazy { retrofitBuilder().create(Endpoint::class.java) }
+fun getNetworkService(): Endpoint = endpoint
