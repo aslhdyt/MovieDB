@@ -7,8 +7,12 @@ import me.assel.moviedb.datasource.model.livedata.NetworkLiveData
 import me.assel.moviedb.datasource.network.getNetworkService
 
 class MovieDetailViewModel(movieId: Int, application: Application): AndroidViewModel(application) {
+    private val network = getNetworkService()
 
     val detail = NetworkLiveData(viewModelScope) {
-        getNetworkService().getMovie(movieId)
+        network.getMovie(movieId)
+    }
+    val videos = NetworkLiveData(viewModelScope) {
+        network.getVideos(movieId)
     }
 }

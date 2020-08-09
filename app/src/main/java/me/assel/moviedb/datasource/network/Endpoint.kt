@@ -1,9 +1,7 @@
 package me.assel.moviedb.datasource.network
 
 import me.assel.moviedb.BuildConfig
-import me.assel.moviedb.datasource.network.model.response.DiscoverMovieResponse
-import me.assel.moviedb.datasource.network.model.response.GenreListResponse
-import me.assel.moviedb.datasource.network.model.response.MovieDetailResponse
+import me.assel.moviedb.datasource.network.model.response.*
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -26,4 +24,18 @@ interface Endpoint {
 
     @GET("movie/{movie_id}")
     suspend fun getMovie(@Path("movie_id") movieId: Int, @Query("api_key") apiKey: String = BuildConfig.THE_MOVIE_DB_API_TOKEN): Response<MovieDetailResponse>
+
+
+    @GET("movie/{id}/videos")
+    suspend fun getVideos(
+            @Path("id") movieId: Int,
+            @Query("api_key") apiKey: String? = BuildConfig.THE_MOVIE_DB_API_TOKEN
+    ): Response<MovieVideoResponse>
+
+    @GET("movie/{id}/reviews")
+    suspend fun getReviews(
+            @Path("id") movieId: Int,
+            @Query("page") page: Int,
+            @Query("api_key") apiKey: String? = BuildConfig.THE_MOVIE_DB_API_TOKEN
+    ): Response<MovieReviewResponse>
 }

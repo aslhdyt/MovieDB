@@ -5,18 +5,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TabHost
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import me.assel.moviedb.AppConfig
-import me.assel.moviedb.BuildConfig
 import me.assel.moviedb.R
 import me.assel.moviedb.databinding.FragmentMovieDetailBinding
 import me.assel.moviedb.datasource.model.NetworkState
 import me.assel.moviedb.datasource.model.handleErrorState
 import me.assel.moviedb.utils.loadImage
 import me.assel.moviedb.utils.viewModelFactory
+import me.assel.moviedb.utils.visible
 
 class MovieDetailFragment: Fragment(R.layout.fragment_movie_detail) {
     companion object {
@@ -34,9 +35,20 @@ class MovieDetailFragment: Fragment(R.layout.fragment_movie_detail) {
         val v = super.onCreateView(inflater, container, savedInstanceState) ?: return null
         FragmentMovieDetailBinding.bind(v).apply {
 
+            //init tab
+            tabHost.setup()
+            tabHost.addTab(tabHost.newTabSpec("Videos").apply {
+                setContent(R.id.recyclerView_trailer)
+                setIndicator("Videos")
+            })
+            tabHost.addTab(tabHost.newTabSpec("Reviews").apply {
+                setContent(R.id.recyclerView_review)
+                setIndicator("Reviews")
+            })
+
 
             vm.detail.observe(viewLifecycleOwner, Observer {
-                if (it is NetworkState.Loading) {} else {}
+                if (it is NetworkState.Loading) { progressBar.show() } else { progressBar.hide() }
                 if (it is NetworkState.Success) {
                     val movie = it.result
                     imageViewPoster.loadImage(AppConfig.IMG_BASE_URL+movie.posterPath)
@@ -44,43 +56,20 @@ class MovieDetailFragment: Fragment(R.layout.fragment_movie_detail) {
                     collapsingToolbar.setExpandedTitleColor(Color.TRANSPARENT)
                     tvRelease.text = movie.releaseDate
                     tvOverview.text = movie.overview
+                    imageViewStar.visible()
                     textViewStar.text = movie.voteAverage.toString()
                 } else handleErrorState(it)
             })
-//            //init tab
-//
-//            //init tab
-//            host = findViewById<View>(R.id.TabHost_content) as TabHost
-//            host.setup()
-//
-//            //tab1
-//
-//            //tab1
-//            var spec: TabSpec = host.newTabSpec("Videos")
-//            spec.setContent(R.id.recyclerView_trailer)
-//            spec.setIndicator("Videos")
-//            host.addTab(spec)
-//
-//            //tab2
-//
-//            //tab2
-//            spec = host.newTabSpec("Reviews")
-//            spec.setContent(R.id.recyclerView_review)
-//            spec.setIndicator("Reviews")
-//            host.addTab(spec)
-//
+
+            vm.videos.observe(viewLifecycleOwner, Observer {
+
+            })
+
 //
 //            //getTrailerVideos
 //
 //
 //            //getTrailerVideos
-//            val retrofit = Retrofit.Builder()
-//                    .baseUrl(AppConfig.BASE_URL)
-//                    .addConverterFactory(GsonConverterFactory.create())
-//                    .build()
-//            val request: RequestInterface = retrofit.create(RequestInterface::class.java)
-//            val call: Call<Videos> = request.getVideos(movie.getId(), AppConfig.API_KEY)
-//
 //            call.enqueue(object : Callback<Videos> {
 //                override fun onResponse(call: Call<Videos>, response: Response<Videos>) {
 //                    val result = response.body()!!.results

@@ -14,11 +14,11 @@ import me.assel.moviedb.databinding.FragmentGenreTabBinding
 import me.assel.moviedb.datasource.model.NetworkState
 import me.assel.moviedb.datasource.model.handleErrorState
 import me.assel.moviedb.datasource.network.model.response.GenreListResponse
-import me.assel.moviedb.ui.MainViewModel
 import me.assel.moviedb.ui.genre.movie.MovieListFragment
 
 class GenreTabFragment : Fragment(R.layout.fragment_genre_tab) {
-    private val vm: MainViewModel by viewModels({requireActivity()})
+    private val vm: GenreViewModel by viewModels()
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = super.onCreateView(inflater, container, savedInstanceState) ?: return null
